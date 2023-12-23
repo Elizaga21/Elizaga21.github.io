@@ -1,8 +1,8 @@
 <?php
-$host = '127.0.0.1';
-$database = 'tienda_virtual';
-$username = 'root';
-$password = '';
+$host = 'sql210.infinityfree.com';
+$database = 'if0_35665002_tienda_virtual';
+$username = 'if0_35665002';
+$password = 'gVS6umS01vgjWi';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$database", $username, $password);
