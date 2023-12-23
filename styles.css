@@ -1,0 +1,106 @@
+
+/* Estilos globales */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: "Helvetica Now Text", Helvetica, Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  
+  /* Estilos para el header */
+  header {
+    background-color: #dedddd;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo img {
+    max-height: 40px;
+  }
+  
+  .nombre-tienda {
+    font-size: 18px;
+  }
+  
+  /* Estilos para el menú de navegación */
+  #menu-navegacion {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+  }
+  
+  #menu-navegacion a {
+    text-decoration: none;
+    color: black;
+    padding: 10px;
+    transition: color 0.3s;
+  }
+  
+  #menu-navegacion li {
+    cursor: pointer;
+    display: inline;
+  }
+  
+  #menu-navegacion li:hover a {
+    color: white;
+  }
+  
+  /* Estilos para el contenido principal */
+  #container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  #content {
+    flex-grow: 1;
+    width: 100%;
+    max-width: 1200px;
+  }
+  
+  /* Estilos para el footer */
+  footer {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  
+  
+  /* Estilos para el header en dispositivos móviles */
+  @media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+  
+    .logo {
+        margin-bottom: 10px;
+    }
+  
+    .nombre-tienda {
+        margin-bottom: 10px;
+    }
+  
+    #menu-navegacion {
+        margin-top: 10px;
+    }
+  
+    #menu-navegacion li {
+        display: block;
+        margin-bottom: 10px;
+    }
+  }
+  
