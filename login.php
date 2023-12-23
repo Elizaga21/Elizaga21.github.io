@@ -90,14 +90,16 @@ function iniciarSesion($usuario) {
             margin: 0 auto;
         }
 
-        .logo {
+        .logoLogin {
             text-align: center;
             margin-bottom: 20px;
         }
 
-        .logo img {
-            max-width: 100%;
+        .logoLogin img {
+            max-width: 150%;
             height: auto;
+            transition: transform 0.3s ease; 
+
         }
 
         .form-container {
@@ -132,24 +134,32 @@ function iniciarSesion($usuario) {
         }
 
         .links {
-            margin-top: 10px;
+            margin-top: 15px;
             color: #888;
+            text-align: center;
         }
 
         .links a {
             color: #555;
             text-decoration: none;
+            display: block; 
+            text-align: center; 
+            margin-bottom: 10px
         }
 
         .links a:hover {
             text-decoration: underline;
         }
+
+        .logoLogin:hover img {
+            transform: scale(1.1); 
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <div class="logo">
-            <img src="/Elizaga21.github.io/logo/logo.svg" alt="Logo de Miniaturas y Colecciones">
+        <div class="logoLogin">
+            <img src="/logo/logo.svg" alt="Logo de Miniaturas y Colecciones">
         </div>
         <div class="form-container">
             <h2>Iniciar sesión</h2>

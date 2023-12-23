@@ -66,6 +66,15 @@
     width: 100%;
     max-width: 1200px;
   }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
   
   /* Estilos para el footer */
   footer {
@@ -102,5 +111,9 @@
         display: block;
         margin-bottom: 10px;
     }
+
+    input {
+      width: calc(100% - 20px);
+  }
   }
   

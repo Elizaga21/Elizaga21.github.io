@@ -1,7 +1,7 @@
 <!-- Contenido del header (logotipo, menú de inicio, quienes somos, contacto, etc.) -->
 <header>
     <div class="logo">
-        <img src="./logo/logo.svg" alt="Logo de Miniaturas y Colecciones">
+        <img src="/logo/logo.svg" alt="Logo de Miniaturas y Colecciones">
     </div>
     
     <div class="nombre-tienda">
