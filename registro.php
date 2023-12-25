@@ -84,11 +84,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 }
 
-if (!empty($errors)) {
-foreach ($errors as $error) {
-echo '<p class="error">' . $error . '</p>';
-}
-}
+//if (!empty($errors)) {
+//foreach ($errors as $error) {
+//echo '<p class="error">' . $error . '</p>';
+//}
+//}
 }
 ?>
 
@@ -131,6 +131,7 @@ echo '<p class="error">' . $error . '</p>';
         }
         h2 {
             font-size: 24px;
+            margin-top: 50px;
             margin-bottom: 30px;
         }
 
