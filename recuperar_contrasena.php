@@ -3,12 +3,12 @@ require 'db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Verificar si se proporcionaron tanto DNI como correo electrónico
-    if (isset($_POST['dni'], $_POST['email'])) {
-        $dni = $_POST['dni'];
-        $email = $_POST['email'];
+    if (isset($_POST['DNI'], $_POST['Email'])) {
+        $DNI = $_POST['DNI'];
+        $Email = $_POST['Email'];
 
         $stmt = $pdo->prepare("SELECT * FROM Usuarios WHERE DNI = ? AND Email = ?");
-        $stmt->execute([$dni, $email]);
+        $stmt->execute([$DNI, $Email]);
         $user = $stmt->fetch();
 
         if ($user) {
@@ -168,8 +168,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="container">
             <h2>Recuperar Contraseña</h2>
             <form method="POST">
-                <input type="text" name="dni" placeholder="DNI">
-                <input type="text" name="email" placeholder="Correo electrónico">
+                <input type="text" name="DNI" placeholder="DNI">
+                <input type="text" name="Email" placeholder="Correo electrónico">
                 <input type="submit" value="Recuperar Contraseña">
             </form>
         </div>
