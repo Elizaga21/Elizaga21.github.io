@@ -21,6 +21,7 @@
             flex-grow: 1;
             width: 100%;
             max-width: 1200px;
+            margin-bottom: 100px;
         }
 
         .buscador {
@@ -50,10 +51,11 @@
 
         .preguntas-frecuentes {
             text-align: center;
+            color: #007bff;
         }
 
         h2, h3 {
-            color: #007bff;
+
             margin-top: 10px;
             margin-bottom: 10px;
         }

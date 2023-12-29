@@ -94,10 +94,11 @@ footer {
   background-color: black;
   color: #fff;
   padding: 45px 0;
-  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 1;
+  margin-top: 20px;
 }
 
 .footer-logo {
@@ -145,17 +146,16 @@ footer .grupo-1 .red-social a {
   line-height: 45px;
   color: #fff;
   margin-right: 10px;
-  background-color: #0d2033;
   text-align: center;
   transition: all 300ms ease;
 }
 
 footer .grupo-1 .red-social a:hover {
   color: rgb(253, 253, 0);
+  font-size: 50px;
 }
 
 footer .grupo-2 {
-  background-color: #0a1a2a;
   padding: 15px 10px;
   text-align: center;
 }
