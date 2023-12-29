@@ -27,44 +27,52 @@ header {
 }
 
 .logo img {
-  width: 150px; /* Ajusta el ancho de la imagen según tu necesidad */
-  filter: invert(1); /* Invierte los colores de la imagen */
+  width: 150px; 
+  filter: invert(1); 
+  transition: transform 0.3s ease, filter 0.3s ease; 
+  
+}
+
+.logo:hover img {
+  transform: scale(1.1); 
 }
 
 .nombre-tienda {
-  font-size: 16px; /* Ajusta según tu necesidad */
-  margin-left: 20px; /* Ajusta según tu necesidad */
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 16px;
+  text-align: center;
+  flex-grow: 1;
+  letter-spacing: 2px; 
 }
 
 /* Estilos para el menú de navegación */
-#menu-navegacion {
+.header-content ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
   display: flex;
 }
 
-#menu-navegacion a {
+.header-content a {
   text-decoration: none;
   color: white;
   padding: 10px;
-  transition: color 0.3s, background-color 0.3s; 
+  transition: color 0.3s, background-color 0.3s;
 }
 
-#menu-navegacion li {
+.header-content li {
   cursor: pointer;
   margin-right: 20px; /* Ajusta según tu necesidad */
 }
 
-#menu-navegacion li:last-child {
+.header-content li:last-child {
   margin-right: 0; /* Elimina el margen derecho del último elemento */
 }
 
-#menu-navegacion li:hover a {
-  color: #ffd700;
-  font-weight: bold;
-}
+.header-content li:hover a {
+  color: rgb(253, 253, 0);
 
+}
 
 /* Estilos para el contenido principal */
 #container {
