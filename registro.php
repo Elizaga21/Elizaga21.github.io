@@ -5,25 +5,25 @@ session_start();
 $errors = array();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $dni = $_POST['dni'];
-    $nombre = $_POST['nombre'];
-    $direccion = $_POST['direccion'];
-    $localidad = $_POST['localidad'];
-    $provincia = $_POST['provincia'];
-    $telefono = $_POST['telefono'];
-    $email = $_POST['email'];
-    $contrasena = password_hash($_POST['contrasena'], PASSWORD_DEFAULT);
-    $rol = 'Cliente'; 
+    $DNI = $_POST['DNI'];
+    $Nombre = $_POST['Nombre'];
+    $Direccion = $_POST['Direccion'];
+    $Localidad = $_POST['Localidad'];
+    $Provincia = $_POST['Provincia'];
+    $Telefono = $_POST['Telefono'];
+    $Email = $_POST['Email'];
+    $Contrasena = password_hash($_POST['Contrasena'], PASSWORD_DEFAULT);
+    $Rol = 'Cliente'; 
 
-    if (empty($dni) || empty($nombre) || empty($direccion) || empty($localidad) || empty($provincia) || empty($telefono) || empty($email) || empty($contrasena)) {
+    if (empty($DNI) || empty($Nombre) || empty($Direccion) || empty($Localidad) || empty($Provincia) || empty($Telefono) || empty($Email) || empty($Contrasena)) {
         $errors[] = "Por favor, complete todos los campos.";
     } else {
-        if (!preg_match('/^[0-9]{8}[A-Za-z]$/', $dni)) {
+        if (!preg_match('/^[0-9]{8}[A-Za-z]$/', $DNI)) {
             $errors[] = "El formato del DNI no es válido.";
         } else {
             // Obtener la letra del DNI
-            $letraDNI = strtoupper(substr($dni, -1));
-            $numerosDNI = substr($dni, 0, -1);
+            $letraDNI = strtoupper(substr($DNI, -1));
+            $numerosDNI = substr($DNI, 0, -1);
 
             // Calcular la letra correcta
             $letrasPosibles = 'TRWAGMYFPDXBNJZSQVHLCKE';
@@ -35,37 +35,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // Validar el teléfono
-            if (!preg_match('/^[0-9]{9}$/', $telefono)) {
+            if (!preg_match('/^[0-9]{9}$/', $Telefono)) {
                 $errors[] = "El formato del teléfono no es válido.";
             } else {
                 // Validar el correo electrónico
-                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                if (!filter_var($Email, FILTER_VALIDATE_EMAIL)) {
                     $errors[] = "El formato del correo electrónico no es válido.";
                 } else {
                     // Comprobar si el DNI ya existe
-                    $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE dni = ?");
-                    $stmt->execute([$dni]);
+                    $stmt = $pdo->prepare("SELECT * FROM Usuarios WHERE DNI = ?");
+                    $stmt->execute([$DNI]);
                     $existingUser = $stmt->fetch();
 
                     if (!$existingUser) {
                         // Comprobar el tamaño de los campos
                         $maxSize = 255; 
                         if (
-                            strlen($nombre) > $maxSize ||
-                            strlen($direccion) > $maxSize ||
-                            strlen($localidad) > $maxSize ||
-                            strlen($provincia) > $maxSize ||
-                            strlen($telefono) > $maxSize ||
-                            strlen($email) > $maxSize
+                            strlen($Nombre) > $maxSize ||
+                            strlen($Direccion) > $maxSize ||
+                            strlen($Localidad) > $maxSize ||
+                            strlen($Provincia) > $maxSize ||
+                            strlen($Telefono) > $maxSize ||
+                            strlen($Email) > $maxSize
                         ) {
                             $errors[] = "El tamaño de uno o más campos excede el límite permitido.";
                         } else {
         // Insertar usuario en la base de datos
         $stmt = $pdo->prepare("INSERT INTO Usuarios (DNI, Nombre, Direccion, Localidad, Provincia, Telefono, Email, Contrasena, Rol) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$dni, $nombre, $direccion, $localidad, $provincia, $telefono, $email, $contrasena, $rol]);
+        $stmt->execute([$DNI, $Nombre, $Direccion, $Localidad, $Provincia, $Telefono, $Email, $Contrasena, $Rol]);
 
         $stmt_rol = $pdo->prepare("SELECT Rol FROM Usuarios WHERE DNI = ?");
-        $stmt_rol->execute([$dni]);
+        $stmt_rol->execute([$DNI]);
         $rol_usuario = $stmt_rol->fetchColumn();
 
         
@@ -173,13 +173,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <h2>Registro de usuario</h2>
         <form method="POST">
-            <input type="text" name="dni" placeholder="DNI">
-            <input type="text" name="nombre" placeholder="Nombre">
-            <input type="text" name="direccion" placeholder="Dirección">
-            <input type="text" name="localidad" placeholder="Localidad">
-            <input type="text" name="provincia" placeholder="Provincia">
-            <input type="text" name="telefono" placeholder="Teléfono">
-            <input type="text" name="email" placeholder="Email">
+            <input type="text" name="DNI" placeholder="DNI">
+            <input type="text" name="Nombre" placeholder="Nombre">
+            <input type="text" name="Direccion" placeholder="Dirección">
+            <input type="text" name="Localidad" placeholder="Localidad">
+            <input type="text" name="Provincia" placeholder="Provincia">
+            <input type="text" name="Telefono" placeholder="Teléfono">
+            <input type="text" name="Email" placeholder="Email">
             <input type="password" name="contrasena" placeholder="Contraseña">
             <input type="submit" value="Registrarse" class="btn btn-success">
         </form>
