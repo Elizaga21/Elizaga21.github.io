@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Miniaturas y Colecciones</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
     
 </head>
 <body>
@@ -17,7 +19,7 @@
 
         <div id="content">
             <?php
-            // Lógica para mostrar contenido dinámico según la sección actual
+           
             if (isset($_GET['seccion'])) {
                 $seccion = $_GET['seccion'];
 
@@ -30,14 +32,14 @@
                         include 'contacto.php';
                         break;
 
-                    // Agregar más casos según las secciones que necesites
+                  
 
                     default:
-                        include 'home.php'; // Página principal por defecto
+                        include 'home.php'; 
                         break;
                 }
             } else {
-                include 'home.php'; // Página principal por defecto
+                include 'home.php'; 
             }
             ?>
         </div>
