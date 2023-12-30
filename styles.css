@@ -75,18 +75,20 @@ header {
 }
 
 /* Estilos para el contenido principal */
-#container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-}
-
 #content {
+  display: flex;
   flex-grow: 1;
   width: 100%;
   max-width: 1200px;
 }
+
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* Add this line */
+  padding: 20px;
+}
+
 
 input {
   width: 100%;
@@ -96,6 +98,75 @@ input {
   border-radius: 4px;
   box-sizing: border-box;
 }
+
+/* Estilos para el menú izquierdo */
+#menu-izquierda {
+  background-color: #f4f4f4;
+  padding: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  margin-left: 10px; /* Puedes ajustar este valor según sea necesario */
+}
+
+h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+select,
+input[type="range"] {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#precio-valor {
+  display: block;
+  margin-top: 10px;
+}
+
+#menu-izquierda button {
+  border: none;
+  color: #fff;
+  background-image: linear-gradient(30deg, #0400ff, #4ce3f7);
+  border-radius: 20px;
+  background-size: 100% auto;
+  font-family: inherit;
+  cursor: pointer;
+  font-size: 17px;
+  padding: 0.6em 1.5em;
+  margin-top: 10px;
+  margin-left: auto; /* Esto alinea el botón a la derecha */
+}
+
+#menu-izquierda button:hover {
+  background-position: right center;
+  background-size: 200% auto;
+  -webkit-animation: pulse 2s infinite;
+  animation: pulse512 1.5s infinite;
+}
+ 
+ @keyframes pulse512 {
+  0% {
+   box-shadow: 0 0 0 0 #05bada66;
+  }
+ 
+  70% {
+   box-shadow: 0 0 0 10px rgb(218 103 68 / 0%);
+  }
+ 
+  100% {
+   box-shadow: 0 0 0 0 rgb(218 103 68 / 0%);
+  }
+ }
 
 /* Estilos para el footer */
 footer {
@@ -173,8 +244,9 @@ footer .grupo-2 small {
 }
 
 
-/* Estilos para el header en dispositivos móviles */
+/* Estilos en dispositivos móviles */
 @media (max-width: 768px) {
+  
   header {
     flex-direction: column;
     text-align: center;
@@ -220,4 +292,15 @@ footer .grupo-2 small {
   footer .grupo-2 small {
     font-size: 14px; /* Ajusta el tamaño del texto pequeño en dispositivos pequeños */
   }
+
+ 
+ #menu-izquierda {
+      padding: 10px;
+    }
+  
+select,
+    input[type="range"] {
+      width: calc(100% - 20px);
+    
+}
 }
