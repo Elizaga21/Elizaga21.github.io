@@ -1,5 +1,5 @@
-<?php include 'db_connection.php'; ?>
-
+<?php
+include 'db_connection.php';?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,39 +9,17 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
-    
 </head>
 <body>
     <?php include 'header.php'; ?>
 
+
     <div id="container">
-        <?php include 'menu_izquierda.php'; ?>
-
+    <?php include 'menu_izquierda.php'; ?>
         <div id="content">
-            <?php
-           
-            if (isset($_GET['seccion'])) {
-                $seccion = $_GET['seccion'];
-
-                switch ($seccion) {
-                    case 'quienes_somos':
-                        include 'quienes_somos.php';
-                        break;
-
-                    case 'contacto':
-                        include 'contacto.php';
-                        break;
-
-                  
-
-                    default:
-                        include 'home.php'; 
-                        break;
-                }
-            } else {
-                include 'home.php'; 
-            }
-            ?>
+            
+                     <?php   include 'home.php'; ?>
+               
         </div>
 
         <?php include 'menu_derecha.php'; ?>

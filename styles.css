@@ -75,20 +75,25 @@ header {
 }
 
 /* Estilos para el contenido principal */
-#content {
-  display: flex;
-  flex-grow: 1;
-  width: 100%;
-  max-width: 1200px;
-}
-
 #container {
   display: flex;
-  flex-direction: column;
-  align-items: stretch; /* Add this line */
+  align-items: center; 
   padding: 20px;
 }
 
+#content {
+  flex-grow: 1; 
+  display: flex;
+  justify-content: center; 
+}
+
+#menu-izquierda {
+  background-color: #f4f4f4;
+  padding: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  margin-right: 10px; 
+}
 
 input {
   width: 100%;
