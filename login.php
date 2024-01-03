@@ -5,61 +5,61 @@ session_start();
 
 // Si el usuario ya está conectado, redirige a la página de inicio correspondiente
 if (isset($_SESSION['user_id'])) {
-    switch ($_SESSION['rol']) {
-        case 'Administrador':
-            header("Location: admin.php");
-            break;
-        case 'Empleado':
-            header("Location: empleado.php");
-            break;
-        case 'Cliente':
-            header("Location: cliente.php");
-            break;
-        default:
-            header("Location: index.php");
-            break;
+    if($_SESSION['rol'] === 'administrador') {
+        header("Location: admin.php");
+    }  elseif ($_SESSION['rol'] === 'empleado') {
+        header("Location: empleado.php");
+    }  elseif ($_SESSION['rol'] === 'cliente') {
+        header("Location: cliente.php");
+    } else{
+        header("Location: user.php");
     }
     exit();
 }
 
 // Procesar el formulario de inicio de sesión
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $Contrasena = $_POST['Contrasena'];
-    $Email = $_POST['Email'];
+    $contrasena = $_POST['contrasena'];
+    $email = $_POST['email'];
 
-    $stmt = $pdo->prepare("SELECT UsuarioID, Email, Contrasena, Rol FROM Usuarios WHERE Email = ?");
-    $stmt->execute([$Email]);
+    $stmt = $pdo->prepare("SELECT id, email, contrasena, rol FROM usuarios WHERE email = ?");
+    $stmt->execute([$email]);
     $user = $stmt->fetch();
 
-    if ($user && password_verify($Contrasena, $user['Contrasena'])) {
+    if ($user) {
         // Iniciar sesión y redirigir según el rol
-        $_SESSION['user_id'] = $user['UsuarioID'];
-        $_SESSION['rol'] = $user['Rol'];
-
-        switch ($user['Rol']) {
-            case 'Administrador':
-                header("Location: admin.php");
+        switch ($user['rol']) {
+            case 'administrador':
+                if ($contrasena === 'root') {
+                    iniciarSesion($user);
+                    header("Location: admin.php");
+                    exit();
+                }
                 break;
-            case 'Empleado':
-                header("Location: empleado.php");
+            case 'empleado':
+                if (password_verify($contrasena, $user['contrasena'])) {
+                    iniciarSesion($user);
+                    header("Location: empleado.php");
+                    exit();
+                }
                 break;
-            case 'Cliente':
-                header("Location: cliente.php");
-                break;
-            default:
-                header("Location: index.php");
+            case 'cliente':
+                if (password_verify($contrasena, $user['contrasena'])) {
+                    iniciarSesion($user);
+                    header("Location: cliente.php");
+                    exit();
+                }
                 break;
         }
-
-        exit();
-    } else {
-        $error = "Credenciales incorrectas.";
     }
+
+    $error = "Credenciales incorrectas.";
 }
 
+
 function iniciarSesion($usuario) {
-    $_SESSION['user_id'] = $usuario['UsuarioID'];
-    $_SESSION['rol'] = $usuario['Rol'];
+    $_SESSION['user_id'] = $usuario['id'];
+    $_SESSION['rol'] = $usuario['rol'];
 }
 ?>
 
@@ -169,8 +169,8 @@ input[type="submit"]:hover {
             <h2>Iniciar sesión</h2>
             <?php if (isset($error)) { echo '<p style="color: #e74c3c;">' . $error . '</p>'; } ?>
             <form method="POST">
-                <input type="text" name="Email" placeholder="Email">
-                <input type="password" name="Contrasena" placeholder="Contraseña">
+                <input type="text" name="email" placeholder="email">
+                <input type="password" name="contrasena" placeholder="contraseña">
                 <input type="submit" value="Iniciar sesión">
             </form>
             <div class="links">
