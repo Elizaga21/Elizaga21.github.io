@@ -1,7 +1,19 @@
-<!-- Contenido del menú derecho (formulario de login/registro, carrito, etc.) -->
-<aside id="menu-derecha">
-    <?php
-    // Lógica para mostrar formulario de login/registro o nombre del usuario logueado
-    // También muestra opciones adicionales según el tipo de usuario
-    ?>
-</aside>
+<!-- Contenido del menú derecho (login/registro) -->
+<div id="menu-derecha">
+    <h2>Inicio de Sesión / Registro</h2>
+
+    <!-- Formulario de Inicio de Sesión -->
+    <form action="login.php" method="post">
+        <label for="username">Usuario:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Iniciar Sesión</button>
+    </form>
+
+    <p>¿No tienes una cuenta? <a href="http://miniaturasycolecciones.infinityfreeapp.com/registro.php">Regístrate aquí</a>.</p>
+</div>
+
+
