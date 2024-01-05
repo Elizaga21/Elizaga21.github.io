@@ -27,7 +27,117 @@ $usuarios = $stmt->fetchAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administrador</title>
     <link rel="stylesheet" href="styles.css">
-   
+   <style>
+ 
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    max-width: 800px;
+    width: 100%;
+    margin: auto;
+    padding: 20px;
+}
+
+h2, h3 {
+    color: #495057;
+}
+
+.welcome-text {
+    color: #28a745;
+}
+
+.user-table {
+    width: 80%; /* Ajusta según tus necesidades */
+    border-collapse: collapse;
+    margin: 20px auto;
+}
+
+.user-table th, .user-table td {
+    border: 1px solid #dee2e6;
+    padding: 8px;
+    text-align: left;
+}
+
+.user-table th {
+    background-color: #000; /* Cambiado a negro */
+    color: #ff0; /* Cambiado a amarillo */
+}
+
+.actions {
+    display: flex;
+    justify-content: space-around;
+}
+
+.action-link {
+    text-decoration: none;
+    color: #495057;
+}
+
+.action-link img {
+    width: 20px;
+    height: 20px;
+}
+
+.action-link:hover {
+    color: #ff0; /* Cambiado a amarillo */
+}
+
+.order-form {
+    margin-top: 20px;
+}
+
+.order-button {
+    background-color: #000; /* Cambiado a negro */
+    color: #fff; /* Cambiado a blanco */
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.order-button:hover {
+    background-color: #333; /* Puedes ajustar este color según tus preferencias */
+}
+
+.admin-links {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column; /* Añadido para cambiar la dirección del eje principal a columna */
+    align-items: center; /* Añadido para centrar en el eje transversal */
+}
+
+.admin-link {
+    text-decoration: none;
+    color: #495057;
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #000;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.admin-link:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.admin-links::before {
+    content: "Mantenimiento";
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+
+    </style>
 </head>
 <body>
 <?php include 'header.php'; ?>
@@ -42,6 +152,15 @@ $usuarios = $stmt->fetchAll();
             ?>
             <p class="textoBienvenida">Bienvenido, <?php echo $admin['nombre']; ?></p>
         <?php endif; ?>
+
+        
+        <div class="admin-links">
+            <a href="informe_usuarios.php" class="admin-link">Informe de Usuarios</a>
+            <a href="informe_articulos.php" class="admin-link">Informe de Artículos</a>
+            <a href="estadisticas_pedidos.php" class="admin-link">Estadísticas de Pedidos</a>
+            <a href="productos_mas_vendidos.php" class="admin-link">Productos más Vendidos</a>
+            <a href="ventas_del_mes.php" class="admin-link">Ventas del Mes</a>
+        </div>
 
         <h3>Usuarios registrados:</h3>
         <table class="user-table">
@@ -69,10 +188,10 @@ $usuarios = $stmt->fetchAll();
                     <td class="actions">
                         <?php if ($_SESSION['user_id'] !== $usuario['id']) : ?>
                             <a href="editar_datos.php?id=<?php echo $usuario['id']; ?>" class="action-link">
-                                <img src="icons8-edit-30.png" alt="Editar">
+                                <img src="/Elizaga21.github.io/icons/edit_FILL0_wght400_GRAD0_opsz24.svg" alt="Editar">
                             </a>
                             <a href="eliminar_cuenta.php?id=<?php echo $usuario['id']; ?>" class="action-link">
-                                <img src="icons8-x-48.png" alt="Eliminar">
+                                <img src="/Elizaga21.github.io/icons/delete_FILL0_wght400_GRAD0_opsz24.svg" alt="Eliminar">
                             </a>
                         <?php endif; ?>
                     </td>
@@ -86,14 +205,6 @@ $usuarios = $stmt->fetchAll();
             <button type="submit" class="order-button">Cambiar Orden</button>
         </form>
 
-        <div class="admin-links">
-            <a href="informe_usuarios.php" class="admin-link">Informe de Usuarios</a>
-            <a href="informe_articulos.php" class="admin-link">Informe de Artículos</a>
-            <a href="estadisticas_pedidos.php" class="admin-link">Estadísticas de Pedidos</a>
-            <a href="productos_mas_vendidos.php" class="admin-link">Productos más Vendidos</a>
-            <a href="ventas_del_mes.php" class="admin-link">Ventas del Mes</a>
-            <a href="cerrar_sesion.php" class="admin-link">Cerrar Sesión</a>
-        </div>
     </div>
 
     <!-- Agrega más secciones según tus necesidades -->

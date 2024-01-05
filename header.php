@@ -16,23 +16,33 @@
         if (isset($_SESSION['user_id'])) {
             $rolUsuario = $_SESSION['rol'];
 
+            echo '<li><a href="perfil.php"><strong>Mi Perfil</strong></a></li>';
+            echo '<li><a href="manual.php"><strong>Manual Usuario</strong></a></li>';
+            echo '<li><a href="logout.php"><strong>Cerrar Sesión</strong></a></li>';
+
             switch ($rolUsuario) {
                 case 'administrador':
                     echo '<li><a href="informes.php"><strong>Informes</strong></a></li>';
                     echo '<li><a href="estadisticas.php"><strong>Estadísticas</strong></a></li>';
-                    echo '<li><a href="productos.php"><strong>Productos</strong></a></li>';
+                    echo '<li><a href="mantenimiento_categorias.php"><strong>Categorías</strong></a></li>';
+                    echo '<li><a href="mantenimiento_articulos.php"><strong>Productos</strong></a></li>';
+                    echo '<li><a href="mantenimiento_pedidos.php"><strong>Pedidos</strong></a></li>';
                     echo '<li><a href="ventas.php"><strong>Ventas</strong></a></li>';
                     break;
                 case 'empleado':
-                    // Opciones específicas para empleados
+                  echo '<li><a href="mantenimiento_articulos.php"><strong>Artículos</strong></a></li>';
+                  echo '<li><a href="mantenimiento_categorias.php"><strong>Categorías</strong></a></li>';
+                  echo '<li><a href="mantenimiento_pedidos.php"><strong>Pedidos</strong></a></li>';
+                  echo '<li><a href="enviar_mailings.php"><strong>Mailings</strong></a></li>';
                     break;
                 case 'cliente':
-                    // Opciones específicas para clientes
+                  echo '<li><a href="mis_pedidos.php"><strong>Mis Pedidos</strong></a></li>';
+                  echo '<li><a href="modificar_perfil.php"><strong>Modificar Perfil</strong></a></li>';
                     break;
                 // Puedes agregar más casos según sea necesario
 
                 default:
-                    // Opciones por defecto o manejo de error
+                  
                     break;
             }
         } else {
