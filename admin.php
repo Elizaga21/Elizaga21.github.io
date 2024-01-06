@@ -8,16 +8,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'administrador') {
 
 require 'db_connection.php';
 
-// Configuración de la ordenación
-$ordenarPor = isset($_GET['ordenar_por']) ? $_GET['ordenar_por'] : 'nombre';
-$ordenAscendente = isset($_GET['orden_ascendente']) ? $_GET['orden_ascendente'] : true;
-
-// Obtener la lista de usuarios ordenada
-$orden = $ordenAscendente ? 'ASC' : 'DESC';
-$stmt = $pdo->prepare("SELECT * FROM usuarios ORDER BY $ordenarPor $orden");
-$stmt->execute();
-$usuarios = $stmt->fetchAll();
-
 ?>
 
 <!DOCTYPE html>
@@ -27,6 +17,8 @@ $usuarios = $stmt->fetchAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administrador</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
    <style>
  
 body {
@@ -49,42 +41,6 @@ h2, h3 {
 
 .welcome-text {
     color: #28a745;
-}
-
-.user-table {
-    width: 80%; /* Ajusta según tus necesidades */
-    border-collapse: collapse;
-    margin: 20px auto;
-}
-
-.user-table th, .user-table td {
-    border: 1px solid #dee2e6;
-    padding: 8px;
-    text-align: left;
-}
-
-.user-table th {
-    background-color: #000; /* Cambiado a negro */
-    color: #ff0; /* Cambiado a amarillo */
-}
-
-.actions {
-    display: flex;
-    justify-content: space-around;
-}
-
-.action-link {
-    text-decoration: none;
-    color: #495057;
-}
-
-.action-link img {
-    width: 20px;
-    height: 20px;
-}
-
-.action-link:hover {
-    color: #ff0; /* Cambiado a amarillo */
 }
 
 .order-form {
@@ -159,51 +115,8 @@ h2, h3 {
             <a href="informe_articulos.php" class="admin-link">Informe de Artículos</a>
             <a href="estadisticas_pedidos.php" class="admin-link">Estadísticas de Pedidos</a>
             <a href="productos_mas_vendidos.php" class="admin-link">Productos más Vendidos</a>
-            <a href="ventas_del_mes.php" class="admin-link">Ventas del Mes</a>
+            <a href="ventas.php" class="admin-link">Ventas del Mes</a>
         </div>
-
-        <h3>Usuarios registrados:</h3>
-        <table class="user-table">
-            <tr>
-                <th>DNI</th>
-                <th>Nombre</th>
-                <th>Dirección</th>
-                <th>Localidad</th>
-                <th>Provincia</th>
-                <th>Teléfono</th>
-                <th>Email</th>
-                <th>Rol</th>
-                <th>Acciones</th>
-            </tr>
-            <?php foreach ($usuarios as $usuario) : ?>
-                <tr>
-                    <td><?php echo $usuario['dni']; ?></td>
-                    <td><?php echo $usuario['nombre']; ?></td>
-                    <td><?php echo $usuario['direccion']; ?></td>
-                    <td><?php echo $usuario['localidad']; ?></td>
-                    <td><?php echo $usuario['provincia']; ?></td>
-                    <td><?php echo $usuario['telefono']; ?></td>
-                    <td><?php echo $usuario['email']; ?></td>
-                    <td><?php echo $usuario['rol']; ?></td>
-                    <td class="actions">
-                        <?php if ($_SESSION['user_id'] !== $usuario['id']) : ?>
-                            <a href="editar_datos.php?id=<?php echo $usuario['id']; ?>" class="action-link">
-                                <img src="/Elizaga21.github.io/icons/edit_FILL0_wght400_GRAD0_opsz24.svg" alt="Editar">
-                            </a>
-                            <a href="eliminar_cuenta.php?id=<?php echo $usuario['id']; ?>" class="action-link">
-                                <img src="/Elizaga21.github.io/icons/delete_FILL0_wght400_GRAD0_opsz24.svg" alt="Eliminar">
-                            </a>
-                        <?php endif; ?>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </table>
-
-        <form class="order-form" method="get">
-            <input type="hidden" name="ordenar_por" value="<?php echo $ordenarPor; ?>">
-            <input type="hidden" name="orden_ascendente" value="<?php echo !$ordenAscendente; ?>">
-            <button type="submit" class="order-button">Cambiar Orden</button>
-        </form>
 
     </div>
 

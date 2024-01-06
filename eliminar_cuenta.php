@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute([$usuarioId]);
 
     if ($_SESSION['rol'] === 'administrador' && $usuarioId != $_SESSION['user_id']) {
-        header("Location: admin.php?mensaje=Usuario eliminado correctamente");
+        header("Location: informe_usuarios.php?mensaje=Usuario eliminado correctamente");
     } else {
         session_destroy();
         header("Location: login.php");
@@ -101,6 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="POST">
         <input type="submit" value="Confirmar Eliminación">
     </form>
-    <a href="<?php echo ($_SESSION['rol'] === 'cliente') ? 'cliente.php' : 'admin.php'; ?>">Volver</a>
+    <a href="<?php echo ($_SESSION['rol'] === 'cliente') ? 'cliente.php' : 'informe_usuarios.php'; ?>">Volver</a>
 </body>
 </html>

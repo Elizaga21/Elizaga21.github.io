@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute([$nombre, $direccion, $localidad, $provincia, $telefono, $email, $usuarioId]);
             }
 
-            $redirectPage = ($_SESSION['rol'] === 'cliente') ? "cliente.php" : ($_SESSION['rol'] === 'administrador' ? "admin.php" : 'empleado.php');
+            $redirectPage = ($_SESSION['rol'] === 'cliente') ? "cliente.php" : ($_SESSION['rol'] === 'administrador' ? "informe_usuarios.php" : 'empleado.php');
             header("Location: $redirectPage?mensaje=Datos actualizados correctamente");
             exit();
         }
@@ -79,18 +79,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <title>Editar Datos</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
 
-        .container {
+
+    <style>
+                body {
+           font-family: 'Arial', sans-serif;
+           background-color: #f8f9fa;
+           margin: 0;
+       }
+
+         .container {
             max-width: 400px;
             width: 100%;
             padding: 20px;
@@ -98,32 +99,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: 1px solid #ddd; 
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
-        }
-
-        h2 {
-            color: #495057; 
-        }
+         }
+         
+         h2, h3 {
+             color: #495057;
+         }
 
         form {
             margin-top: 20px;
+           
+
         }
 
         label {
-            color: #495057; 
+            color: #495057;
             margin-top: 10px;
+            font-weight: bold; /* Añadido para resaltar los labels */
+            
         }
 
-        input, select {
-            margin-bottom: 10px;
-            width: 100%;
+        input,
+           select {
+               margin-bottom: 10px; /* Reduje el espacio entre los elementos */
+               width: 100%;
             padding: 10px;
             border: 1px solid #ddd; 
-            border-radius: 4px;
-        }
+            border-radius: 4px; /* Añadido para incluir el padding y border en el ancho y alto total */
+           }
 
         input[type="submit"] {
-            background-color: #28a745;
-            color: #fff;
+            background-color: #000;
+            color: #ffc107;
             padding: 10px 15px;
             border: none;
             border-radius: 4px;
@@ -132,23 +138,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         input[type="submit"]:hover {
-            background-color: #218838; 
+            background-color: #333;
         }
 
         a {
-            display: block;
+            display: inline-block; /* Cambiado a inline-block para ajustarse al estilo global */
             margin-top: 10px;
             text-decoration: none;
-            color: #28a745; 
+            color: #000;
             transition: color 0.3s;
         }
 
         a:hover {
-            color: #218838; 
+            color: #333;
+        }
+
+        .error-container {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .error-list {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .error {
+            margin-bottom: 5px;
         }
     </style>
 </head>
 <body>
+<?php include 'header.php'; ?>
+<div class="container">
     <h2>Editar Datos</h2>
 
     <?php if (!empty($errors)) : ?>
@@ -192,6 +218,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <input type="submit" value="Guardar Cambios">
     </form>
-    <a href="<?php echo ($_SESSION['rol'] === 'cliente') ? 'cliente.php' : 'admin.php'; ?>">Volver</a>
+    <a href="<?php echo ($_SESSION['rol'] === 'cliente') ? 'cliente.php' : 'informe_usuarios.php'; ?>">Volver</a>
+</div>
+    
+    <?php include 'footer.php'; ?>
+
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
