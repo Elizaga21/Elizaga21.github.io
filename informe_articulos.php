@@ -32,6 +32,10 @@ $Articulos = $stmt->fetchAll();
 $totalArticulos = $pdo->query("SELECT COUNT(*) FROM Articulos")->fetchColumn();
 $totalPaginas = ceil($totalArticulos / $articulosPorPagina);
 
+// Verificar si hay un parámetro 'eliminado' en la URL
+if (isset($_GET['eliminado']) && $_GET['eliminado'] == 'true') {
+    echo '<p style="color: green;">El artículo se ha eliminado correctamente.</p>';
+}
 ?>
 
 <!DOCTYPE html>
@@ -303,11 +307,11 @@ h2, h3 {
                     <td><?php echo $articulo['Activo'] ? 'Sí' : 'No'; ?></td>
                     <td>
             <?php if ($_SESSION['rol'] === 'empleado' || $_SESSION['rol'] === 'administrador') : ?>
-                <a href="modificar_articulo.php?codigo=<?php echo $articulo['Codigo']; ?>" class="edit-icon">
+                <a href="modificar_articulo.php?Codigo=<?php echo $articulo['Codigo']; ?>" class="edit-icon">
                      <span class="material-icons">edit</span>
                          </a>
 
-                         <a href="eliminar_articulo.php?codigo=<?php echo $articulo['Codigo']; ?>" class="delete-icon">
+                         <a href="eliminar_articulo.php?Codigo=<?php echo $articulo['Codigo']; ?>" class="delete-icon">
                       <span class="material-icons">delete</span> 
                           </a>
 

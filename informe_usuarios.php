@@ -29,6 +29,8 @@ $usuarios = $stmt->fetchAll();
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
    <style>
  
 body {
@@ -157,6 +159,24 @@ h2, h3 {
             background-color: #333; /* Puedes ajustar este color según tus preferencias */
         }
 
+        .edit-icon {
+    font-size: 30px; 
+    color: #000; 
+    text-decoration: none; 
+}
+
+.delete-icon{
+    font-size: 30px; 
+    color: #000; 
+    text-decoration: none; 
+}
+.edit-icon:hover {
+    opacity: 0.8;
+}
+.delete-icon:hover {
+    opacity: 0.8;
+}
+
     </style>
 </head>
 <body>
@@ -199,10 +219,10 @@ h2, h3 {
                     <td class="actions">
                         <?php if ($_SESSION['user_id'] !== $usuario['id']) : ?>
                             <a href="editar_datos.php?id=<?php echo $usuario['id']; ?>" class="action-link">
-                                <img src="/Elizaga21.github.io/icons/edit_FILL0_wght400_GRAD0_opsz24.svg" alt="Editar">
+                            <span class="material-icons">edit</span>
                             </a>
                             <a href="eliminar_cuenta.php?id=<?php echo $usuario['id']; ?>" class="action-link">
-                                <img src="/Elizaga21.github.io/icons/delete_FILL0_wght400_GRAD0_opsz24.svg" alt="Eliminar">
+                            <span class="material-icons">delete</span> 
                             </a>
                         <?php endif; ?>
                     </td>
