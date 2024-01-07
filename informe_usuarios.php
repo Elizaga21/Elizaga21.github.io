@@ -177,6 +177,28 @@ h2, h3 {
     opacity: 0.8;
 }
 
+.admin-links_users {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end; /* Alinea los elementos al final del contenedor */
+}
+
+.admin-link_user {
+    text-decoration: none;
+    color: #ff0; /* Amarillo */
+    padding: 10px;
+    margin: 5px;
+    background-color: #000; /* Negro */
+    border: 1px solid #000;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.admin-link_user:hover {
+    background-color: #333; /* Puedes ajustar este color según tus preferencias */
+    color: #fff; /* Blanco */
+}
+
     </style>
 </head>
 <body>
@@ -194,6 +216,11 @@ h2, h3 {
 
         <h2>Informe de Usuarios</h2>
         <h3>Usuarios registrados:</h3>
+        
+        <div class="admin-links_users">
+    <a href="registro_admin.php" class="admin-link_user">Crear nuevo usuario</a>
+    <a href="buscarCliente.php" class="admin-link_user">Buscar usuarios</a>
+</div>
         <table class="user-table">
             <tr>
                 <th>DNI</th>

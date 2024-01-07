@@ -41,7 +41,7 @@
 
             echo '<li><a href="perfil.php"><strong>Mi Perfil</strong></a></li>';
             echo '<li><a href="manual.php"><strong>Manual Usuario</strong></a></li>';
-            echo '<li><a href="logout.php"><strong>Cerrar Sesión</strong></a></li>';
+            echo '<li><a href="cerrar_sesion.php"><strong>Cerrar Sesión</strong></a></li>';
         } else {
             // Menú predeterminado para usuarios no autenticados
             echo '<li><a href="login.php"><strong>Iniciar Sesión</strong></a></li>';
