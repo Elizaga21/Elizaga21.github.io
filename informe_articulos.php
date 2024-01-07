@@ -17,12 +17,14 @@ $inicio = ($paginaActual - 1) * $articulosPorPagina;
 $orden = isset($_GET['orden']) ? $_GET['orden'] : 'Nombre';
 $busqueda = isset($_GET['busqueda']) ? $_GET['busqueda'] : '';
 
-$sql = "SELECT A.*, C.Nombre AS NombreCategoria FROM Articulos A
+$sql = "SELECT A.*, C.Nombre AS NombreCategoria, C.Escala AS EscalaCategoria FROM Articulos A
         LEFT JOIN Categorias C ON A.CategoriaID = C.CategoriaID";
+        
 if (!empty($busqueda)) {
     $sql .=  " WHERE TRIM(A.Nombre) LIKE '%" . trim($busqueda) . "%'";
 }
 $sql .= " ORDER BY A.$orden LIMIT $inicio, $articulosPorPagina";
+
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
@@ -209,54 +211,25 @@ h2, h3 {
 .delete-icon:hover {
     opacity: 0.8;
 }
+
+.btn-enviar {
+        background-color: #000;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .btn-enviar:hover {
+        background-color: #333;
+    }
 </style>
 </head>
 <body>
 <?php include 'header.php'; ?>
 
-<div class="main-container">
-    <div class="container">
-        <h2>Alta de Artículos</h2>
-
-        <form action="procesar_imagen.php" method="post" enctype="multipart/form-data">
-        <label for="Codigo">Código:</label>
-        <input type="text" name="Codigo" pattern="[a-zA-Z]{3}[0-9]{1,5}" required>
-        <br>
-
-        <label for="Nombre">Nombre:</label>
-        <input type="text" name="Nombre" required>
-        <br>
-
-        <label for="Descripcion">Descripción:</label>
-        <textarea name="Descripcion" required></textarea>
-        <br>
-
-        <label for="CategoriaID">Categoría:</label>
-        <input type="text" name="CategoriaID" required>
-        <br>
-
-        <label for="Precio">Precio:</label>
-        <input type="number" name="Precio" min="0" step="0.01" required>
-        <br>
-
-        <label for="Imagen">Imagen (jpg, jpeg, gif, png | Max 300 KB | Max 200x200 px):</label>
-        <input type="file" name="Imagen" accept="image/jpeg, image/png, image/gif" required>
-        <br>
-
-        <label for="enOferta">En Oferta:</label>
-            <input type="checkbox" name="enOferta" value="1">
-            <br>
-
-            <label for="Activo">Activo:</label>
-            <input type="checkbox" name="Activo" value="1" checked>
-            <br>
-
-        <input type="submit" value="Enviar">
-    </form>
-    </div>
-    </div>
-
-    <br>
 
     <div class="main-container">
     <h2>Lista de Artículos</h2>
@@ -289,10 +262,12 @@ h2, h3 {
             <th>Nombre</th>
             <th>Descripción</th>
             <th>Categoría</th>
+            <th>Escala</th>
             <th>Precio</th>
             <th>Imagen</th>
             <th>En Oferta</th>
             <th>Activo</th>
+            <th>Año</th>
             <th>Edición</th>
         </tr>
         <?php foreach ($Articulos as $articulo): ?>
@@ -301,10 +276,12 @@ h2, h3 {
                 <td><?php echo $articulo['Nombre']; ?></td>
                 <td><?php echo $articulo['Descripcion']; ?></td>
                 <td><?php echo $articulo['NombreCategoria']; ?></td>
+                <td><?php echo $articulo['EscalaCategoria']; ?></td>
                 <td><?php echo $articulo['Precio']; ?></td>
                 <td><img src="<?php echo $articulo['Imagen']; ?>" alt="Imagen"></td>
                 <td><?php echo $articulo['enOferta'] ? 'Sí' : 'No'; ?></td>
-                    <td><?php echo $articulo['Activo'] ? 'Sí' : 'No'; ?></td>
+                <td><?php echo $articulo['Activo'] ? 'Sí' : 'No'; ?></td>
+                <td><?php echo $articulo['Anyo']; ?></td>
                     <td>
             <?php if ($_SESSION['rol'] === 'empleado' || $_SESSION['rol'] === 'administrador') : ?>
                 <a href="modificar_articulo.php?Codigo=<?php echo $articulo['Codigo']; ?>" class="edit-icon">
@@ -329,6 +306,66 @@ h2, h3 {
         <?php endfor; ?>
     </div>
 
+    <div class="main-container">
+    <div class="container">
+        <h2>Alta de Artículos</h2>
+
+        <form action="procesar_imagen.php" method="post" enctype="multipart/form-data">
+        <label for="Codigo">Código:</label>
+        <input type="text" name="Codigo" pattern="[a-zA-Z]{3}[0-9]{1,5}" required>
+        <br>
+
+        <label for="Nombre">Nombre:</label>
+        <input type="text" name="Nombre" required>
+        <br>
+
+        <label for="Descripcion">Descripción:</label>
+        <textarea name="Descripcion" required></textarea>
+        <br>
+
+        <label for="CategoriaID">Categoría:</label>
+        <select name="CategoriaID" required>
+        <option value="">Selecciona una categoría</option>
+        <?php
+        // Consulta para obtener las categorías ordenadas de forma ascendente
+        $categorias = $pdo->query("SELECT CategoriaID, Nombre, Escala FROM Categorias ORDER BY Nombre ASC")->fetchAll();
+    
+     // Iterar sobre las categorías y crear las opciones del desplegable
+        foreach ($categorias as $categoria) {
+        echo "<option value=\"{$categoria['CategoriaID']}\">{$categoria['Nombre']} - {$categoria['Escala']}</option>";
+         }
+         ?>
+        </select>
+         <br>
+
+        <label for="Precio">Precio:</label>
+        <input type="number" name="Precio" min="0" step="0.01" required>
+        <br>
+
+        <label for="Imagen">Imagen (jpg, jpeg, gif, png | Max 300 KB | Max 200x200 px):</label>
+        <input type="file" name="Imagen" accept="image/jpeg, image/png, image/gif" required>
+        <br>
+
+        <label for="enOferta">En Oferta:</label>
+            <input type="checkbox" name="enOferta" value="1">
+            <br>
+
+        <label for="Activo">Activo:</label>
+        <input type="checkbox" name="Activo" value="1" checked>
+        <br>
+
+        <label for="Anyo">Año:</label>
+        <input type="text" name="Anyo" pattern="\d{4}" placeholder="Ej. 2022" required>
+        <br>
+
+
+            <input type="submit" value="Enviar" class="btn-enviar">
+
+    </form>
+    </div>
+    </div>
+
+    <br>
     <br>
     <div class="button-container">
             <a href="admin.php">Volver atrás</a>
