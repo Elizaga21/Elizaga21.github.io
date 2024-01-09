@@ -33,7 +33,7 @@ $usuarios = $stmt->fetchAll();
 
    <style>
  
-body {
+ body {
     font-family: 'Arial', sans-serif;
     background-color: #f8f9fa;
     margin: 0;
@@ -41,11 +41,24 @@ body {
 
 .container {
     text-align: center;
-    max-width: 800px;
-    width: 100%;
+    max-width: 100%; /* Change to 100% to occupy the full width */
     margin: auto;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
+.user-table {
+    width: 100%; /* Change to 100% to occupy the full width of the container */
+    border-collapse: collapse;
+    margin: 20px auto;
+    text-align: center;
+    display: table;
+}
+
+
+
 
 h2, h3 {
     color: #495057;
@@ -55,11 +68,9 @@ h2, h3 {
     color: #28a745;
 }
 
-.user-table {
-    width: 80%; /* Ajusta según tus necesidades */
-    border-collapse: collapse;
-    margin: 20px auto;
-}
+
+
+
 
 .user-table th, .user-table td {
     border: 1px solid #dee2e6;
@@ -225,9 +236,12 @@ h2, h3 {
             <tr>
                 <th>DNI</th>
                 <th>Nombre</th>
+                <th>Apellidos</th>
                 <th>Dirección</th>
                 <th>Localidad</th>
                 <th>Provincia</th>
+                <th>País</th>
+                <th>Código Postal</th>
                 <th>Teléfono</th>
                 <th>Email</th>
                 <th>Rol</th>
@@ -237,9 +251,12 @@ h2, h3 {
                 <tr>
                     <td><?php echo $usuario['dni']; ?></td>
                     <td><?php echo $usuario['nombre']; ?></td>
+                    <td><?php echo $usuario['apellidos']; ?></td>
                     <td><?php echo $usuario['direccion']; ?></td>
                     <td><?php echo $usuario['localidad']; ?></td>
                     <td><?php echo $usuario['provincia']; ?></td>
+                    <td><?php echo $usuario['pais']; ?></td>
+                    <td><?php echo $usuario['codpos']; ?></td>
                     <td><?php echo $usuario['telefono']; ?></td>
                     <td><?php echo $usuario['email']; ?></td>
                     <td><?php echo $usuario['rol']; ?></td>

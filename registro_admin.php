@@ -11,9 +11,12 @@ require 'db_connection.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dni = $_POST['dni'];
     $nombre = $_POST['nombre'];
+    $apellidos = $_POST['apellidos'];
     $direccion = $_POST['direccion'];
     $localidad = $_POST['localidad'];
     $provincia = $_POST['provincia'];
+    $pais = $_POST['pais'];
+    $codpos = $_POST['codpos'];
     $telefono = $_POST['telefono'];
     $email = $_POST['email'];
     $contrasena = password_hash($_POST['contrasena'], PASSWORD_DEFAULT);
@@ -59,18 +62,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
 
-                if (!preg_match('/^\d{9}$/', $telefono)) {
-                    $error_message = "El teléfono debe contener 9 dígitos.";
+                if (!preg_match('/^\d{9}$/', trim($telefono))) {
+                    $error_message = "El teléfono debe contener exactamente 9 dígitos.";
                 }
+                
 
                 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     $error_message = "Formato de correo electrónico incorrecto.";
                 }
 
-                $stmt_insert = $pdo->prepare("INSERT INTO usuarios (dni, nombre, direccion, localidad, provincia, telefono, email, contrasena, rol, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt_insert->execute([$dni, $nombre, $direccion, $localidad, $provincia, $telefono, $email, $contrasena, $rol, $activo]);
+                $stmt_insert = $pdo->prepare("INSERT INTO usuarios (dni, nombre, apellidos, direccion, localidad, provincia,pais,codpos, telefono, email, contrasena, rol, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt_insert->execute([$dni, $nombre,$apellidos, $direccion, $localidad, $provincia, $pais, $codpos, $telefono, $email, $contrasena, $rol, $activo]);
 
-                header("Location: admin.php");
+                header("Location: informe_usuarios.php");
                 exit();
             }
         }
@@ -82,27 +86,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="es">
 <head>
     <title>Crear Nuevo Usuario</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <style>
-      body {
+   body {
+            font-family: 'Arial', sans-serif;
             background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             margin: 0;
         }
 
         .container {
-            max-width: 400px;
+            max-width: 800px; /* Aumenté el ancho máximo */
             width: 100%;
             padding: 20px;
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            margin-top: 20px; 
+            margin: 20px auto; /* Centré el contenedor */
         }
 
         h2 {
@@ -111,35 +115,99 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         form {
             margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Dividí el formulario en dos columnas */
+            grid-gap: 15px; /* Añadí espacio entre las columnas */
         }
 
         input,
         select {
             margin-bottom: 15px;
+            width: 100%; /* Hice que los campos ocupen el 100% del ancho de su contenedor */
+            box-sizing: border-box; /* Incluí el padding y el borde en el ancho total */
         }
 
-        input[type="submit"] {
-            background-color: #28a745;
-            color: #fff;
-            padding: 10px 15px;
+        input[type="submit"],
+        .back-button {
+            width: 100%; /* Hice que los botones ocupen el 100% del ancho de su contenedor */
+            padding: 10px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s;
         }
 
-        input[type="submit"]:hover {
-            background-color: #218838;
+        input[type="submit"] {
+            background-color: #000;
+            color: #ff0;
         }
 
+        input[type="submit"]:hover {
+            background-color: #333;
+        }
+
+        .back-button {
+            background-color: #333;
+            color: #ff0;
+            display: block;
+            text-align: center;
+            text-decoration: none;
+        }
 
         .error {
             color: #dc3545;
             margin-top: 10px;
         }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #000;
+            color: #ffffff;
+        }
+        .nombre-tienda h1 {
+            margin: 0;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+        }
+
+        #menu-navegacion ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        #menu-navegacion ul li {
+            margin-right: 20px;
+        }
+
+        #menu-navegacion ul li:last-child {
+            margin-right: 0;
+        }
+
+        #menu-navegacion ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.3s; /* Agregué una transición suave para suavizar el cambio de color */
+}
+
+#menu-navegacion ul li a:hover {
+    color: #ffd700; /* Amarillo */
+}
+
+    </style>
     </style>
 </head>
 <body>
+<?php include 'header.php'; ?>
     <div class="container">
         <h2>Crear Nuevo Usuario</h2>
         <?php if (isset($error_message)) : ?>
@@ -157,6 +225,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="form-group">
+                <label for="apellidos">Apellidos:</label>
+                <input type="text" name="apellidos" class="form-control" placeholder="Apellidos" required>
+            </div>
+
+            <div class="form-group">
                 <label for="direccion">Dirección:</label>
                 <input type="text" name="direccion" class="form-control" placeholder="Dirección" required>
             </div>
@@ -169,6 +242,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-group">
                 <label for="provincia">Provincia:</label>
                 <input type="text" name="provincia" class="form-control" placeholder="Provincia" required>
+            </div>
+
+            <div class="form-group">
+                <label for="pais">Pais:</label>
+                <input type="text" name="pais" class="form-control" placeholder="Pais" required>
+            </div>
+
+            <div class="form-group">
+                <label for="codpos">Código Postal:</label>
+                <input type="text" name="codpos" class="form-control" placeholder="codigo postal" required>
             </div>
 
             <div class="form-group">
@@ -189,14 +272,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-group">
                 <label for="rol">Rol:</label>
                 <select name="rol" class="form-control">
-                    <option value="usuario">Cliente</option>
+                    <option value="cliente">Cliente</option>
                     <option value="administrador">Administrador</option>
-                    <option value="editor">Empleado</option>
+                    <option value="empleado">Empleado</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="activo">Rol:</label>
+                <label for="activo">Activo:</label>
                 <select name="activo" class="form-control">
                     <option value="1">Si</option>
                     <option value="2">No</option>
@@ -210,7 +293,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
         <a href="admin.php">Volver al Panel de Administrador</a>
     </div>
-
+    <?php include 'footer.php'; ?>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
