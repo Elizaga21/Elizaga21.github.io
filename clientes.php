@@ -4,22 +4,28 @@ class Cliente {
     private $id;
     private $dni;
     private $nombre;
+    private $apellidos;
     private $direccion;
     private $localidad;
     private $provincia;
+    private $pais; 
+    private $codpos; 
     private $telefono;
     private $email;
-    private $contrasena; // Agregado campo contrasena
+    private $contrasena; 
     private $rol;
-    private $activo; // Agregado campo activo
+    private $activo;
 
-    public function __construct($id, $dni, $nombre, $direccion, $localidad, $provincia, $telefono, $email, $contrasena, $rol, $activo) {
+    public function __construct($id, $dni, $nombre, $apellidos, $direccion, $localidad, $provincia, $pais, $codpos, $telefono, $email, $contrasena, $rol, $activo) {
         $this->id = $id;
         $this->dni = $dni;
         $this->nombre = $nombre;
+        $this->apellidos = $apellidos;
         $this->direccion = $direccion;
         $this->localidad = $localidad;
         $this->provincia = $provincia;
+        $this->pais = $pais;
+        $this->codpos = $codpos;
         $this->telefono = $telefono;
         $this->email = $email;
         $this->contrasena = $contrasena;
@@ -29,8 +35,57 @@ class Cliente {
 
     // Métodos de acceso
 
+    public function getId() {
+        return $this->id;
+    }
+
+    public function getDni() {
+        return $this->dni;
+    }
+
+    public function getNombre() {
+        return $this->nombre;
+    }
+
+    public function getApellidos() {
+        return $this->apellidos;
+    }
+
+    public function getDireccion() {
+        return $this->direccion;
+    }
+    
+    public function getLocalidad() {
+        return $this->localidad;
+    }
+    
+    public function getProvincia() {
+        return $this->provincia;
+    }
+
+    public function getPais() {
+        return $this->pais;
+    }
+
+    public function getCodpos() {
+        return $this->codpos;
+    }
+
+    
+    public function getTelefono() {
+        return $this->telefono;
+    }
+    
+    public function getEmail() {
+        return $this->email;
+    }
+    
     public function getContrasena() {
         return $this->contrasena;
+    }
+
+    public function getRol() {
+        return $this->rol;
     }
 
     public function getActivo() {
@@ -58,9 +113,12 @@ class ClienteRepository {
                 $row['id'],
                 $row['dni'],
                 $row['nombre'],
+                $row['apellidos'],
                 $row['direccion'],
                 $row['localidad'],
                 $row['provincia'],
+                $row['pais'],
+                $row['codpos'],
                 $row['telefono'],
                 $row['email'],
                 $row['contrasena'],
@@ -81,9 +139,12 @@ class ClienteRepository {
                 $row['id'],
                 $row['dni'],
                 $row['nombre'],
+                $row['apellidos'],
                 $row['direccion'],
                 $row['localidad'],
                 $row['provincia'],
+                $row['pais'],
+                $row['codpos'],
                 $row['telefono'],
                 $row['email'],
                 $row['contrasena'],

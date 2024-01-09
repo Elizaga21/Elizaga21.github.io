@@ -6,8 +6,36 @@ if (!isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'administrador') {
     exit();
 }
 
-require 'db_connection.php';
 
+
+require 'db_connection.php';
+require 'clientes.php';
+
+// Variables para almacenar la información del cliente
+$clienteInfo = "";
+
+// Código de búsqueda y visualización de resultados...
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Verifica si se ha enviado el formulario de búsqueda
+    $dni = isset($_POST['dni_buscar']) ? $_POST['dni_buscar'] : '';
+
+    // Crea una instancia de ClienteRepository
+    $clienteRepository = new ClienteRepository($pdo);
+
+    // Realiza la búsqueda por DNI
+    $cliente = $clienteRepository->buscarPorDni($dni);
+
+    if ($cliente) {
+        // Almacena la información del cliente en la variable
+        $clienteInfo = "<h3>Información del Cliente:</h3>";
+        $clienteInfo .= "DNI: " . $cliente->getDni() . "<br>";
+        $clienteInfo .= "Nombre: " . $cliente->getNombre() . "<br>";
+        // ... (mostrar otros detalles según sea necesario)
+    } else {
+        // Muestra un mensaje si el cliente no se encuentra
+        $clienteInfo = "<p>Cliente no encontrado.</p>";
+    }
+}
 // Configuración de la ordenación
 $ordenarPor = isset($_GET['ordenar_por']) ? $_GET['ordenar_por'] : 'nombre';
 $ordenAscendente = isset($_GET['orden_ascendente']) ? $_GET['orden_ascendente'] : true;
@@ -17,8 +45,7 @@ $orden = $ordenAscendente ? 'ASC' : 'DESC';
 $stmt = $pdo->prepare("SELECT * FROM usuarios ORDER BY $ordenarPor $orden");
 $stmt->execute();
 $usuarios = $stmt->fetchAll();
-
-?>
+    ?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -210,6 +237,10 @@ h2, h3 {
     color: #fff; /* Blanco */
 }
 
+#cliente-info {
+            margin-top: 20px;
+        }
+
     </style>
 </head>
 <body>
@@ -281,6 +312,16 @@ h2, h3 {
         </form>
 
     </div>
+
+    <form method="POST">
+    <input type="text" name="dni_buscar" placeholder="DNI">
+    <input type="submit" value="Buscar">
+    </form>
+
+    <div id="cliente-info">
+            <?php echo $clienteInfo; ?>
+        </div>
+
     <div class="back-button-container">
             <a href="<?php echo ($_SESSION['rol'] === 'cliente') ? 'cliente.php' : 'admin.php'; ?>" class="back-button">Volver</a>
         </div>
