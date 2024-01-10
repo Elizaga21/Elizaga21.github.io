@@ -30,7 +30,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $clienteInfo = "<h3>Información del Cliente:</h3>";
         $clienteInfo .= "DNI: " . $cliente->getDni() . "<br>";
         $clienteInfo .= "Nombre: " . $cliente->getNombre() . "<br>";
-        // ... (mostrar otros detalles según sea necesario)
+        $clienteInfo .= "Apellidos: " . $cliente->getApellidos() . "<br>";
+        $clienteInfo .= "Dirección: " . $cliente->getDireccion() . "<br>";
+        $clienteInfo .= "Localidad: " . $cliente->getLocalidad() . "<br>";
+        $clienteInfo .= "Provincia: " . $cliente->getProvincia() . "<br>";
+        $clienteInfo .= "País: " . $cliente->getPais() . "<br>";
+        $clienteInfo .= "Código Postal: " . $cliente->getCodPos() . "<br>";
+        $clienteInfo .= "Teléfono: " . $cliente->getTelefono() . "<br>";
+        $clienteInfo .= "Email: " . $cliente->getEmail() . "<br>";
+        $clienteInfo .= "Rol: " . $cliente->getRol() . "<br>";
+        $clienteInfo .= "Activo: " . $cliente->getActivo() . "<br>";
+
+
+
     } else {
         // Muestra un mensaje si el cliente no se encuentra
         $clienteInfo = "<p>Cliente no encontrado.</p>";
@@ -84,7 +96,22 @@ $usuarios = $stmt->fetchAll();
     display: table;
 }
 
+form {
+    margin-top: 20px;
+    text-align: center;
+}
 
+form input[type="text"] {
+    width: 20%; /* Ajusta el ancho según tus necesidades */
+    padding: 8px;
+    font-size: 14px; /* Ajusta el tamaño de la fuente según tus necesidades */
+}
+
+form input[type="submit"] {
+    width: auto; /* Ajusta el ancho según tus necesidades */
+    padding: 8px 15px;
+    font-size: 14px; /* Ajusta el tamaño de la fuente según tus necesidades */
+}
 
 
 h2, h3 {
@@ -94,10 +121,6 @@ h2, h3 {
 .welcome-text {
     color: #28a745;
 }
-
-
-
-
 
 .user-table th, .user-table td {
     border: 1px solid #dee2e6;
@@ -238,8 +261,19 @@ h2, h3 {
 }
 
 #cliente-info {
-            margin-top: 20px;
-        }
+    margin-top: 20px;
+    max-width: 400px;
+    text-align: center;
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: none; /* Inicialmente oculto */
+    margin: 0 auto; /* Centra el div horizontalmente */
+}
+
 
     </style>
 </head>
@@ -261,7 +295,6 @@ h2, h3 {
         
         <div class="admin-links_users">
     <a href="registro_admin.php" class="admin-link_user">Crear nuevo usuario</a>
-    <a href="buscarCliente.php" class="admin-link_user">Buscar usuarios</a>
 </div>
         <table class="user-table">
             <tr>
@@ -318,9 +351,18 @@ h2, h3 {
     <input type="submit" value="Buscar">
     </form>
 
+    <?php if (!empty($clienteInfo)) : ?>
+    <script>
+        // Muestra el bloque #cliente-info cuando hay información disponible
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("cliente-info").style.display = "block";
+        });
+    </script>
     <div id="cliente-info">
-            <?php echo $clienteInfo; ?>
-        </div>
+        <?php echo $clienteInfo; ?>
+    </div>
+<?php endif; ?>
+
 
     <div class="back-button-container">
             <a href="<?php echo ($_SESSION['rol'] === 'cliente') ? 'cliente.php' : 'admin.php'; ?>" class="back-button">Volver</a>

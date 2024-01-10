@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 function iniciarSesion($usuario) {
     $_SESSION['user_id'] = $usuario['id'];
     $_SESSION['rol'] = $usuario['rol'];
+    $_SESSION['nombre'] = obtenerNombreDeUsuario();
 }
 ?>
 

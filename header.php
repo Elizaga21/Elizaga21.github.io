@@ -1,3 +1,33 @@
+
+<?php
+session_start();
+
+function obtenerNombreDeUsuario() {
+
+  require 'db_connection.php'; 
+
+  if (isset($_SESSION['user_id'])) {
+      $user_id = $_SESSION['user_id'];
+
+      $stmt = $pdo->prepare("SELECT nombre FROM usuarios WHERE id = ?");
+      $stmt->execute([$user_id]);
+      $result = $stmt->fetch();
+
+      if ($result) {
+          return $result['nombre'];
+      }
+  }
+
+  // Si no se puede obtener el nombre de la base de datos, puedes devolver un valor por defecto
+  return "UsuarioEjemplo";
+}
+
+// Si $_SESSION['nombre'] no está definido, intenta obtenerlo
+if (!isset($_SESSION['nombre'])) {
+  $_SESSION['nombre'] = obtenerNombreDeUsuario();
+}
+?>
+
 <header>
   <div class="logo">
     <a href="index.php">
@@ -14,6 +44,13 @@
       <ul>
         <?php
         if (isset($_SESSION['user_id'])) {
+
+          if (!empty($_SESSION['nombre'])) {
+            echo '<li><strong>Hola, ' . $_SESSION['nombre'] . '</strong></li>';
+        } else {
+            echo '<li><strong>Hola, [nombre]</strong></li>';
+        }
+
             $rolUsuario = $_SESSION['rol'];
 
             switch ($rolUsuario) {
@@ -39,8 +76,12 @@
                     break;
             }
 
+              // Verifica si el usuario no es "empleado" ni "administrador"
+              if ($rolUsuario !== 'empleado' && $rolUsuario !== 'administrador') {
+                echo '<li><a href="manual.php"><strong>Manual Usuario</strong></a></li>';
+            }
+
             echo '<li><a href="perfil.php"><strong>Mi Perfil</strong></a></li>';
-            echo '<li><a href="manual.php"><strong>Manual Usuario</strong></a></li>';
             echo '<li><a href="cerrar_sesion.php"><strong>Cerrar Sesión</strong></a></li>';
         } else {
             // Menú predeterminado para usuarios no autenticados
