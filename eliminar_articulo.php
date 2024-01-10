@@ -34,13 +34,14 @@ if ($_SESSION['rol'] === 'empleado' || $_SESSION['rol'] === 'administrador') {
     }
 }
 
-// Proceso de eliminación
+// Proceso de eliminación (baja lógica)
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $stmt = $pdo->prepare("DELETE FROM Articulos WHERE Codigo = ?");
+    $stmt = $pdo->prepare("UPDATE Articulos SET Activo = false WHERE Codigo = ?");
     $stmt->execute([$articuloCodigo]);
     header("Location: eliminar_articulo.php?eliminado=true");
     exit();
 }
+
 
 ?>
 
@@ -123,7 +124,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container-delete">
         <h2>Eliminar Artículo</h2>
 
-        <p>¿Estás seguro de que deseas eliminar este artículo?</p>
+        <p>¿Estás seguro de que deseas eliminar este artículo de los activos?</p>
 
         <!-- Formulario de confirmación -->
         <form method="POST">

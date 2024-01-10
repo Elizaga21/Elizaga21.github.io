@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    $stmt = $pdo->prepare("DELETE FROM usuarios WHERE id = ?");
+    $stmt = $pdo->prepare("UPDATE usuarios SET activo = false WHERE id = ?");
     $stmt->execute([$usuarioId]);
 
     if ($_SESSION['rol'] === 'administrador' && $usuarioId != $_SESSION['user_id']) {
@@ -33,74 +33,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Eliminar Cuenta</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <style>
-        body {
-            background-color: #f8f9fa;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
+              body {
+            font-family: 'Arial', sans-serif;
+           background-color: #f8f9fa;
+           margin: 0;
         }
 
-        .container {
-            max-width: 400px;
-            width: 100%;
-            padding: 20px;
-            background-color: #fff; 
-            border: 1px solid #ddd; 
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+        
+
+        .container-delete {
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: auto;
+    margin-top: 50px;
+}
+
+.container-delete h2{
+    text-align: center;
+
+}
+
+        p {
             text-align: center;
-        }
-
-        h2 {
             color: #495057;
         }
 
-        p {
-            color: #495057; 
-        }
-
         form {
+            text-align: center;
             margin-top: 20px;
         }
 
-        input[type="submit"] {
+        form input[type="submit"] {
             background-color: #dc3545;
             color: #fff;
-            padding: 10px 15px;
+            padding: 10px 20px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
 
-        input[type="submit"]:hover {
+        form input[type="submit"]:hover {
             background-color: #c82333;
         }
 
         a {
             display: block;
+            text-align: center;
             margin-top: 10px;
+            color: #007bff;
             text-decoration: none;
-            color: #28a745; 
-            transition: color 0.3s;
         }
 
         a:hover {
-            color: #218838; 
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
+<?php include 'header.php'; ?>
+
+<div class="container-delete">
     <h2>Eliminar Cuenta</h2>
     <p>¿Estás seguro de que deseas eliminar este usuario? Esta acción es irreversible.</p>
     <form method="POST">
         <input type="submit" value="Confirmar Eliminación">
     </form>
     <a href="<?php echo ($_SESSION['rol'] === 'cliente') ? 'cliente.php' : 'informe_usuarios.php'; ?>">Volver</a>
+    </div>
+    <?php include 'footer.php'; ?>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

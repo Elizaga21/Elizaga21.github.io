@@ -54,7 +54,7 @@ $ordenAscendente = isset($_GET['orden_ascendente']) ? $_GET['orden_ascendente'] 
 
 // Obtener la lista de usuarios ordenada
 $orden = $ordenAscendente ? 'ASC' : 'DESC';
-$stmt = $pdo->prepare("SELECT * FROM usuarios ORDER BY $ordenarPor $orden");
+$stmt = $pdo->prepare("SELECT * FROM usuarios WHERE activo = true ORDER BY $ordenarPor $orden");
 $stmt->execute();
 $usuarios = $stmt->fetchAll();
     ?>
@@ -291,7 +291,7 @@ h2, h3 {
         <?php endif; ?>
 
         <h2>Informe de Usuarios</h2>
-        <h3>Usuarios registrados:</h3>
+        <h3>Usuarios activos registrados:</h3>
         
         <div class="admin-links_users">
     <a href="registro_admin.php" class="admin-link_user">Crear nuevo usuario</a>
