@@ -1,11 +1,12 @@
 <?php
 session_start();
+require 'db_connection.php';
+include 'header.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'administrador') {
     header("Location: login.php");
     exit();
 }
-require 'db_connection.php';
 
 // Consulta para obtener estadísticas de pedidos
 $sql = "SELECT EstadoPedido, COUNT(*) as Cantidad FROM Pedidos GROUP BY EstadoPedido";
@@ -22,8 +23,6 @@ $estadisticasPedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></head>
     <style>
         body {
     font-family: 'Arial', sans-serif;
@@ -78,7 +77,6 @@ table tr:hover {
 }
     </style>
 <body>
-    <?php include 'header.php'; ?>
 
     <div class="container">
         <h2>Estadísticas de Pedidos</h2>
