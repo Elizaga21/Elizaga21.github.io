@@ -1,7 +1,6 @@
 <?php
-require 'db_connection.php';
-
 session_start();
+require 'db_connection.php';
 
 // Si el usuario ya está conectado, redirige a la página de inicio correspondiente
 if (isset($_SESSION['user_id'])) {
