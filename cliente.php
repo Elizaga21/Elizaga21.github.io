@@ -113,6 +113,7 @@ h2, h3 {
             <a href="mis_pedidos.php" class="cliente-link"> Estado Pedidos</a>
             <a href="articulos_comprados.php" class="cliente-link">Tus Artículos ya comprados</a>
             <a href="manual.php" class="cliente-link">Manual Usuario</a>
+            <a href="eliminar_cuenta.php" class="cliente-link">Eliminar Cuenta</a>
 
 
         </div>

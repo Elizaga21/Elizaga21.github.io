@@ -53,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     $error = "Credenciales incorrectas.";
+    
 }
 
 
