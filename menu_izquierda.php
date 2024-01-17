@@ -8,12 +8,12 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!-- Contenido del menú izquierdo (categorías y subcategorías) -->
-<nav id="menu-izquierda">
+<nav id="menu-izquierda" style="background-color: #f4f4f4; padding: 15px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); width: 440px; margin-left: 10px; margin-right: 5px;">
 
 
     <!-- Buscar Artículo por Nombre -->
-    <label for="buscar-articulo">Buscar Artículo...</label>
-    <input type="text" id="buscar-articulo" name="buscar-articulo" placeholder="Nombre del Artículo">
+    <label for="nombreArticulo">Buscar Artículo...</label>
+    <input type="text" id="nombreArticulo" name="nombreArticulo" placeholder="Nombre del Artículo">
 
     <!-- Escala -->
     <label for="escala">Escala:</label>
@@ -64,39 +64,86 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
 
     <button id="button" onclick="aplicarFiltros()">Aplicar</button>
 </nav>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 <!-- Script para manejar la búsqueda y aplicar filtros -->
 <script>
     function aplicarFiltros() {
-        // Obtener valores seleccionados
-        var escala = $('#escala').val();
-        var marca = $('#marca').val();
-        var tipoVehiculo = $('#tipo-vehiculo').val();
-        var coleccion = $('#colecciones').val();
-        var precio = $('#precio').val();
+    // Obtener valores seleccionados
+    var escala = $('#escala').val();
+    var marca = $('#marca').val();
+    var tipoVehiculo = $('#tipo-vehiculo').val();
+    var coleccion = $('#colecciones').val();
+    var precio = $('#precio').val();
 
-        // Obtener nombre del artículo a buscar
-        var nombreArticulo = $('#buscar-articulo').val();
+    // Obtener nombre del artículo a buscar
+    var nombreArticulo = $('#nombreArticulo').val();
 
-        // Realizar la petición AJAX
-        $.ajax({
-            type: 'POST',
-            url: 'buscar_articulos.php', // Reemplaza con la URL correcta para manejar la búsqueda
-            data: {
-                escala: escala,
-                marca: marca,
-                tipoVehiculo: tipoVehiculo,
-                coleccion: coleccion,
-                precio: precio,
-                nombreArticulo: nombreArticulo
-            },
-            success: function(response) {
-                // Actualizar el contenido de la página con los resultados de la búsqueda
-                $('#content').html(response);
-            },
-            error: function(error) {
-                console.error('Error en la petición AJAX', error);
-            }
-        });
-    }
+    // Realizar la petición AJAX
+    $.ajax({
+        type: 'POST', // Change to GET method
+        url: 'buscar_articulo.php',
+        data: {
+            nombreArticulo: nombreArticulo, // Pass the search term
+            escala: escala,
+            marca: marca,
+            tipoVehiculo: tipoVehiculo,
+            coleccion: coleccion,
+            precio: precio
+        },
+        success: function(response) {
+            // Actualizar el contenido de la página con los resultados de la búsqueda
+            $('#content').html(response);
+        },
+        error: function(error) {
+            console.error('Error en la petición AJAX', error);
+        }
+    });
+}
+
 </script>
+
+<style>
+    #menu-izquierda label,
+    #menu-izquierda select,
+    #menu-izquierda input {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    #menu-izquierda button {
+        border: none;
+        color: #fff;
+        background-image: linear-gradient(30deg, #0400ff, #4ce3f7);
+        border-radius: 20px;
+        background-size: 100% auto;
+        font-family: inherit;
+        cursor: pointer;
+        font-size: 17px;
+        padding: 0.6em 1.5em;
+        margin-top: 10px;
+        margin-left: auto;
+        /* Esto alinea el botón a la derecha */
+    }
+
+    #menu-izquierda button:hover {
+        background-position: right center;
+        background-size: 200% auto;
+        -webkit-animation: pulse 2s infinite;
+        animation: pulse512 1.5s infinite;
+    }
+
+    @keyframes pulse512 {
+        0% {
+            box-shadow: 0 0 0 0 #05bada66;
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgb(218 103 68 / 0%);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgb(218 103 68 / 0%);
+        }
+    }
+</style>

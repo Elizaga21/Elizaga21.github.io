@@ -2,11 +2,11 @@
   .articulos-container {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: center;
   }
 
   .articulo {
-    width: 48%;
+    width: 42%;
     margin-bottom: 20px;
     box-sizing: border-box;
     border: 1px solid #ccc;
@@ -16,7 +16,7 @@
   }
 
   .articulo img {
-    max-width: 100%;
+    max-width: 90%;
     height: auto;
     border-radius: 4px;
   }
