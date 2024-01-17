@@ -35,26 +35,22 @@
 
   .articulo .iconos i {
     cursor: pointer;
-    color: red;
   }
 
   .articulo button {
-    width: 100%;
-    background-color: #fff; /* Cambiado a blanco */
-    color: #333; /* Cambiado a un color oscuro */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
     cursor: pointer;
-    padding: 5px 10px;
-    border: 1px solid #333; /* Borde para distinguir */
-    border-radius: 4px;
-    margin-top: 10px;
   }
 
   .articulo button:hover {
-    background-color: #555;
-    color: #fff; /* Cambiado a blanco en el hover */
+    background-color: #45a049;
+
   }
 </style>
-
 <?php
 // Consulta para obtener los artículos
 $query = $pdo->query("SELECT * FROM Articulos");
@@ -64,8 +60,10 @@ if ($query) {
     while ($articulo = $query->fetch(PDO::FETCH_ASSOC)) {
         // Mostramos cada artículo
         echo "<div class='articulo'>
-                <img src='{$articulo['Imagen']}' alt='{$articulo['Nombre']}'>
-                <h2>{$articulo['Nombre']}</h2>
+                <a href='detalle_articulo.php?codigo_articulo={$articulo['Codigo']}'>
+                    <img src='{$articulo['Imagen']}' alt='{$articulo['Nombre']}'>
+                    <h2>{$articulo['Nombre']}</h2>
+                </a>
                 <p>{$articulo['Descripcion']}</p>
                 <p>Precio: {$articulo['Precio']} euros</p>
                 <div class='iconos'>
@@ -86,6 +84,7 @@ if ($query) {
     echo "Error en la consulta de la base de datos.";
 }
 ?>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const heartIcons = document.querySelectorAll('.heart-icon');
