@@ -62,9 +62,7 @@ if (!isset($_SESSION['nombre'])) {
                 echo '<li><a href="perfil.php"><strong>Mi Perfil</strong></a></li>';
                 break;
             case 'empleado':
-                echo '<li><a href="mantenimiento_articulos.php"><strong>Artículos</strong></a></li>';
-                echo '<li><a href="mantenimiento_categorias.php"><strong>Categorías</strong></a></li>';
-                echo '<li><a href="estadisticas_pedidos.php"><strong>Pedidos</strong></a></li>';
+              echo '<li><a href="empleado.php"><strong>Mantenimiento</strong></a></li>';            
                 echo '<li><a href="enviar_mailings.php"><strong>Mailings</strong></a></li>';
                 echo '<li><a href="perfil.php"><strong>Mi Perfil</strong></a></li>';
                 break;

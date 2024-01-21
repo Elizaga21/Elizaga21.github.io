@@ -3,7 +3,7 @@ session_start();
 require 'db_connection.php';
 include 'header.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'administrador') {
+if (!isset($_SESSION['user_id']) || ($_SESSION['rol'] !== 'empleado' && $_SESSION['rol'] !== 'administrador')) {
     header("Location: login.php");
     exit();
 }
