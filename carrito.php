@@ -7,7 +7,6 @@ if (isset($_POST['agregar_carrito'])) {
     $codigo_articulo = $_POST['codigo_articulo'];
     $cantidad = $_POST['cantidad'];
 
-    // Agregar al carrito (puedes modificar según tu estructura de datos)
     $_SESSION['carrito'][$codigo_articulo] = $cantidad;
 }
 
@@ -31,7 +30,26 @@ if (!empty($_SESSION['carrito'])) {
     <title>Carrito de Compras</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
-    <!-- Otros enlaces a CSS y scripts si es necesario -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>   
+
+    <style>
+ 
+ body {
+     font-family: 'Arial', sans-serif;
+     background-color: #f8f9fa;
+     margin: 0;
+ }
+ 
+ .container {
+     text-align: center;
+     max-width: 800px;
+     width: 100%;
+     margin: auto;
+     padding: 20px;
+ }
+
+ </style>
 </head>
 <body>
 
@@ -61,7 +79,6 @@ if (!empty($_SESSION['carrito'])) {
 
     <?php include 'footer.php'; ?>
 
-    <!-- Otros scripts si es necesario -->
 
 </body>
 </html>
