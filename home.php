@@ -50,15 +50,63 @@
     background-color: #45a049;
 
   }
+
+  .paginacion a {
+        display: inline-block;
+        padding: 10px;
+        margin-right: 5px;
+        background-color: #000;
+        color: #fff;
+        border-radius: 5px;
+        text-decoration: none;
+        margin-bottom: 10px; 
+    }
+
+
 </style>
 <?php
-// Consulta para obtener los artículos
-$query = $pdo->query("SELECT * FROM Articulos");
+// Configuración de paginación
+$articulosPorPagina = 8;
+$paginaActual = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
+$inicio = ($paginaActual - 1) * $articulosPorPagina;
 
-if ($query) {
+// Configuración de orden y búsqueda
+$orden = isset($_GET['orden']) ? $_GET['orden'] : 'Nombre';
+$busqueda = isset($_GET['busqueda']) ? $_GET['busqueda'] : '';
+
+
+
+// Consulta SQL
+$sql = "SELECT A.*, C.Nombre AS NombreCategoria, C.Escala AS EscalaCategoria FROM Articulos A
+        LEFT JOIN Categorias C ON A.CategoriaID = C.CategoriaID";
+
+// Aplicar filtro de búsqueda si está definido
+if (!empty($busqueda)) {
+    $sql .=  " WHERE TRIM(A.Nombre) LIKE '%" . trim($busqueda) . "%'";
+}
+
+$sql .= " ORDER BY A.$orden LIMIT :inicio, :articulosPorPagina";
+
+$stmt = $pdo->prepare($sql);
+$stmt->bindParam(':inicio', $inicio, PDO::PARAM_INT);
+$stmt->bindParam(':articulosPorPagina', $articulosPorPagina, PDO::PARAM_INT);
+$stmt->execute();
+$Articulos = $stmt->fetchAll();
+
+// Obtener artículos marcados como favoritos
+$articulosFavoritos = isset($_SESSION['articulos_favoritos']) ? $_SESSION['articulos_favoritos'] : [];
+
+// Consulta para obtener el total de artículos (para la paginación)
+$totalArticulos = $pdo->query("SELECT COUNT(*) FROM Articulos")->fetchColumn();
+$totalPaginas = ceil($totalArticulos / $articulosPorPagina);
+
+if ($stmt) {
     echo "<div class='articulos-container'>";
-    while ($articulo = $query->fetch(PDO::FETCH_ASSOC)) {
-        // Mostramos cada artículo
+    foreach ($Articulos as $articulo) {
+        // Verificar si el artículo está marcado como favorito
+        $esFavorito = in_array($articulo['Codigo'], $articulosFavoritos);
+        
+        // Mostrar cada artículo
         echo "<div class='articulo'>
                 <a href='detalle_articulo.php?codigo_articulo={$articulo['Codigo']}'>
                     <img src='{$articulo['Imagen']}' alt='{$articulo['Nombre']}'>
@@ -67,7 +115,7 @@ if ($query) {
                 <p>{$articulo['Descripcion']}</p>
                 <p>Precio: {$articulo['Precio']} euros</p>
                 <div class='iconos'>
-                    <i class='far fa-heart heart-icon' data-codigo='{$articulo['Codigo']}'></i>
+                    <i class='far fa-heart heart-icon " . ($esFavorito ? 'fas' : '') . "' data-codigo='{$articulo['Codigo']}'></i>
                     <form action='carrito.php' method='post'>
                         <input type='hidden' name='codigo_articulo' value='{$articulo['Codigo']}'>
                         <input type='number' name='cantidad' value='1' min='1'>
@@ -80,10 +128,20 @@ if ($query) {
     }
 
     echo "</div>";
+
+    // Mostrar enlaces de paginación
+    echo "<div class='paginacion'>";
+    for ($i = 1; $i <= $totalPaginas; $i++) {
+        $activeClass = $i == $paginaActual ? 'active' : '';
+        echo "<a href='home.php?pagina={$i}&orden={$orden}&busqueda={$busqueda}' class='pagination-link {$activeClass}'>{$i}</a>";
+      }
+    echo "</div>";
 } else {
     echo "Error en la consulta de la base de datos.";
 }
 ?>
+
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

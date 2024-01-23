@@ -88,7 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $categoriaID = $_POST['categoria_id'];
 
                 if (eliminarCategoria($pdo, $categoriaID)) {
-                    echo "Categoría eliminada correctamente.";
                 } else {
                     echo "Error al eliminar la categoría.";
                 }
