@@ -27,6 +27,26 @@ function obtenerNombreDeUsuario() {
 if (!isset($_SESSION['nombre'])) {
   $_SESSION['nombre'] = obtenerNombreDeUsuario();
 }
+
+function calcularPrecioTotal($carrito) {
+  $codigo_articulos = array_keys($carrito);
+  $placeholders = str_repeat('?,', count($codigo_articulos) - 1) . '?';
+
+  global $pdo; // Asegúrate de que $pdo esté disponible en este contexto
+
+  $stmt = $pdo->prepare("SELECT Codigo, Precio FROM Articulos WHERE Codigo IN ($placeholders)");
+  $stmt->execute($codigo_articulos);
+  $articulos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+  $total_precio = 0;
+
+  foreach ($articulos as $articulo) {
+      $total_precio += $articulo['Precio'] * $carrito[$articulo['Codigo']];
+  }
+
+  return $total_precio;
+}
+
 ?>
 
 <header>
@@ -72,8 +92,7 @@ if (!isset($_SESSION['nombre'])) {
                 echo '<li><a href="favoritos.php"><strong>Mis Favoritos</strong></a></li>';
 
                 break;
-    
-            // Puedes agregar más casos según sea necesario
+
     
             default:
                 break;
@@ -85,7 +104,20 @@ if (!isset($_SESSION['nombre'])) {
         echo '<li><a href="login.php"><strong>Iniciar Sesión</strong></a></li>';
         echo '<li><a href="quienes_somos.php"><strong>Quiénes Somos</strong></a></li>';
         echo '<li><a href="contacto.php"><strong>Contacto</strong></a></li>';
+   // Enlace del carrito y resumen
+echo '<li><a href="carrito.php" style="text-decoration: none;">';
+echo '<i class="fas fa-shopping-cart"></i>';
+                
+// Mostrar el resumen del carrito si no está vacío
+if (!empty($_SESSION['carrito'])) {
+    $total_unidades = array_sum($_SESSION['carrito']);
+    $total_precio = calcularPrecioTotal($_SESSION['carrito']); // Función para calcular el precio total
+                    
+    echo '<span style="margin-left: 5px;">' . $total_unidades . ' unidades | ' . $total_precio . ' €</span>';
+}
+
     }
+
     
         ?>
       </ul>
