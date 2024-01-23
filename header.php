@@ -90,8 +90,20 @@ function calcularPrecioTotal($carrito) {
                 echo '<li><a href="mis_pedidos.php"><strong>Mis Pedidos</strong></a></li>';
                 echo '<li><a href="cliente.php"><strong>Mi Perfil</strong></a></li>';
                 echo '<li><a href="favoritos.php"><strong>Mis Favoritos</strong></a></li>';
+                echo '<li><a href="carrito.php" style="text-decoration: none;">';
+                echo '<i class="fas fa-shopping-cart"></i>'; 
 
-                break;
+                // Mostrar el resumen del carrito si no está vacío
+            if (!empty($_SESSION['carrito'])) {
+              $total_unidades = array_sum($_SESSION['carrito']);
+              $total_precio = calcularPrecioTotal($_SESSION['carrito']); // Función para calcular el precio total
+
+              echo '<span style="margin-left: 5px;">' . $total_unidades . ' unidades | ' . $total_precio . ' €</span>';
+          }
+
+          echo '</a></li>';
+          break;
+
 
     
             default:
@@ -119,8 +131,6 @@ if (!empty($_SESSION['carrito'])) {
 }
 
 echo '</a></li>';
-
-
     }
 
     
