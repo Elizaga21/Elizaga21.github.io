@@ -1,4 +1,5 @@
 <?php
+include 'header.php';
 session_start();
 
 require 'db_connection.php';
@@ -9,6 +10,8 @@ if (isset($_POST['agregar_carrito'])) {
 
     $_SESSION['carrito'][$codigo_articulo] = $cantidad;
 }
+
+define('STANDARD_SHIPPING_COST', 7.5); 
 
 // Obtener detalles de artículos en el carrito
 $carrito_detalles = [];
@@ -30,6 +33,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_carrito'])
     }
 }
 
+// Calculate the total price for the entire order
+$total_price = 0.0;
+foreach ($carrito_detalles as $articulo) {
+    $item_price = $articulo['Precio'] * $_SESSION['carrito'][$articulo['Codigo']];
+    $total_price += $item_price;
+}
+
+// Add the shipping cost to the total
+$total_price += (count($carrito_detalles) * STANDARD_SHIPPING_COST);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -44,12 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_carrito'])
     <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>   
 
     <style>
-            body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding-top: 56px; /* Ajuste para la barra de navegación fija */
-        }
+              body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+}
 
         .container {
             max-width: 800px;
@@ -139,8 +152,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_carrito'])
 </head>
 <body>
 
-    <?php include 'header.php'; ?>
-
     <div class="container">
         <h2>Carrito de Compras</h2>
         <?php if (!empty($carrito_detalles)): ?>
@@ -150,15 +161,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_carrito'])
                         <img src="<?php echo $articulo['Imagen']; ?>" alt="<?php echo $articulo['Nombre']; ?>">
                         <h3><?php echo $articulo['Nombre']; ?></h3>
                         <p>Cantidad: 
-                            <input type="number" name="cantidad[<?php echo $articulo['Codigo']; ?>]" 
-                                   value="<?php echo $_SESSION['carrito'][$articulo['Codigo']]; ?>" 
-                                   min="1" max="10">
+                        <input type="number" name="cantidad[<?php echo $articulo['Codigo']; ?>]" 
+                       value="<?php echo $_SESSION['carrito'][$articulo['Codigo']]; ?>" 
+                       min="1" max="10">
                         </p>
                         <p>Precio: <?php echo $articulo['Precio']; ?> €</p>
+                        <p>Total: <?php echo ($articulo['Precio'] * $_SESSION['carrito'][$articulo['Codigo']]); ?> €</p>
                         <a href="eliminar_del_carrito.php?codigo_articulo=<?php echo $articulo['Codigo']; ?>">Eliminar</a>
                     </div>
                 <?php endforeach; ?>
+
+                <p>Envío: <?php echo STANDARD_SHIPPING_COST; ?> € por cada artículo</p>
+
                 <div class="cart-buttons">
+                <p>Total del Carrito: <?php echo ($total_price); ?> €</p>
                     <button type="submit" name="actualizar_carrito">Actualizar Carrito</button>
                 </div>
             </form>
