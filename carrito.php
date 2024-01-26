@@ -11,7 +11,14 @@ if (isset($_POST['agregar_carrito'])) {
     $_SESSION['carrito'][$codigo_articulo] = $cantidad;
 }
 
+
+
 define('STANDARD_SHIPPING_COST', 7.5); 
+
+// Verificar si el usuario está autenticado
+$user_authenticated = isset($_SESSION['user_id']);
+$is_customer = $user_authenticated && $_SESSION['rol'] === 'cliente';
+
 
 // Obtener detalles de artículos en el carrito
 $carrito_detalles = [];
@@ -43,6 +50,53 @@ foreach ($carrito_detalles as $articulo) {
 // Add the shipping cost to the total
 $total_price += (count($carrito_detalles) * STANDARD_SHIPPING_COST);
 
+
+
+
+// Procesar el formulario de datos de envío y pago
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirmar_pedido']) && !$is_customer) {
+    // Procesar y guardar los datos en la base de datos
+    try {
+        $pdo->beginTransaction();
+
+        // Obtener datos del formulario
+        $nombre = $_POST['nombre'];
+        $apellidos = $_POST['apellidos'];
+        $direccion_envio = $_POST['direccion_envio'];
+        $localidad_envio = $_POST['localidad_envio'];
+        $provincia_envio = $_POST['provincia_envio'];
+        $pais_envio = $_POST['pais_envio'];
+        $codpos_envio = $_POST['codpos_envio'];
+        $telefono_envio = $_POST['telefono_envio']; 
+        $email = $_POST['email']; 
+        $Contrasena = password_hash($_POST['Contrasena'], PASSWORD_DEFAULT);
+    
+        // Realizar la inserción en la base de datos
+        $stmt_pedido = $pdo->prepare("INSERT INTO usuarios (nombre, apellidos, direccion, localidad, provincia, pais, codpos, telefono, email, rol, activo, contrasena) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'cliente', true, ?)");
+        $stmt_pedido->execute([$nombre, $apellidos, $direccion_envio, $localidad_envio, $provincia_envio, $pais_envio, $codpos_envio, $telefono_envio, $email, $Contrasena]);
+        $usuario_id = $pdo->lastInsertId();
+
+
+        // Confirmar la transacción
+        $pdo->commit();
+
+        // Después de confirmar el pedido
+$_SESSION['datos_envio_confirmados'] = true;
+$_SESSION['rol'] = 'cliente';
+
+
+        // Redireccionar al usuario con un mensaje de alerta en JavaScript
+        echo '<script>alert("Datos de envío guardados correctamente."); window.location.href="carrito.php";</script>';
+        exit();
+    } catch (Exception $e) {
+        // Revertir la transacción en caso de error
+        $pdo->rollBack();
+        echo "Error al procesar los datos de envío: " . $e->getMessage();
+    }
+}
+
+$pedido_id = $pdo->lastInsertId();
+
 // Procesar la compra si se ha enviado el formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
     try {
@@ -56,6 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
         $stmt_pedido = $pdo->prepare("INSERT INTO Pedidos (UsuarioID, Fecha, EstadoPedido) VALUES (?, ?, ?)");
         $stmt_pedido->execute([$usuario_id, $fecha_pedido, $estado_pedido]);
         $pedido_id = $pdo->lastInsertId();
+
 
         // Agregar detalles del pedido
         foreach ($carrito_detalles as $articulo) {
@@ -78,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
            $stmt_detalle->execute([$pedido_id, $articulo['Codigo'], $cantidad, $precio_unitario, $item_price]);
     
             }
+        
         }
 
         // Limpiar el carrito
@@ -86,8 +142,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
         // Confirmar la transacción
         $pdo->commit();
 
+        
+    
+
         // Redireccionar a la página de agradecimiento
-        header("Location: agradecimiento.php");
+        header("Location: realizar_pago.php");
         exit();
     } catch (Exception $e) {
         // Revertir la transacción en caso de error
@@ -205,7 +264,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
 <body>
 
     <div class="container">
-        <h2>Carrito de Compras</h2>
+        <h2>Datos de Envío</h2>
+ <!-- Mostrar el formulario de datos de envío y pago solo si el usuario no tiene el rol de cliente -->
+ <?php if (!$is_customer && empty($_SESSION['datos_envio_confirmados'])): ?>          
+          <form action="carrito.php" method="post">
+    <!-- ... Otros campos del formulario ... -->
+    <label for="nombre">Nombre:</label>
+    <input type="text" name="nombre" required>
+
+    <label for="apellidos">Apellidos:</label>
+    <input type="text" name="apellidos" required>
+
+    <label for="direccion_envio">Dirección de Envío:</label>
+    <input type="text" name="direccion_envio" required>
+
+    <label for="localidad_envio">Localidad de Envío:</label>
+    <input type="text" name="localidad_envio" required>
+
+    <label for="provincia_envio">Provincia de Envío:</label>
+    <input type="text" name="provincia_envio" required>
+
+    <label for="pais_envio">País de Envío:</label>
+    <input type="text" name="pais_envio" required>
+
+    <label for="codpos_envio">Código Postal de Envío:</label>
+    <input type="text" name="codpos_envio" required>
+
+    <label for="telefono_envio">Teléfono:</label>
+    <input type="text" name="telefono_envio" required>
+
+    <label for="email">Email:</label>
+    <input type="text" name="email" required>
+    
+    <label for="Contrasena">Contraseña:</label>
+    <input type="text" name="Contrasena" required>
+
+    
+                    <input type="submit" name="confirmar_pedido" value="Confirmar Datos Envío">
+                </form>
+            <?php endif; ?>
+            
         <?php if (!empty($carrito_detalles)): ?>
             <form action="carrito.php" method="post">
                 <?php foreach ($carrito_detalles as $articulo): ?>
