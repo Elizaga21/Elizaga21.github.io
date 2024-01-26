@@ -43,6 +43,58 @@ foreach ($carrito_detalles as $articulo) {
 // Add the shipping cost to the total
 $total_price += (count($carrito_detalles) * STANDARD_SHIPPING_COST);
 
+// Procesar la compra si se ha enviado el formulario
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
+    try {
+        $pdo->beginTransaction();
+
+        // Crear un nuevo pedido
+        $usuario_id = $_SESSION['user_id'];
+        $fecha_pedido = date('Y-m-d');
+        $estado_pedido = 'Pendiente';
+
+        $stmt_pedido = $pdo->prepare("INSERT INTO Pedidos (UsuarioID, Fecha, EstadoPedido) VALUES (?, ?, ?)");
+        $stmt_pedido->execute([$usuario_id, $fecha_pedido, $estado_pedido]);
+        $pedido_id = $pdo->lastInsertId();
+
+        // Agregar detalles del pedido
+        foreach ($carrito_detalles as $articulo) {
+            $cantidad = $_SESSION['carrito'][$articulo['Codigo']];
+            $precio_unitario = $articulo['Precio'];
+            $item_price = $precio_unitario * $cantidad;
+
+            // Actualizar la sesión con el total del pedido
+            $total_pedido += $item_price;
+
+        
+            // Verificar si la entrada ya existe
+            $stmt_verificar = $pdo->prepare("SELECT * FROM DetallesPedidos WHERE PedidoID = ? AND ArticuloID = ?");
+            $stmt_verificar->execute([$pedido_id, $articulo['Codigo']]);
+            $existente = $stmt_verificar->fetch(PDO::FETCH_ASSOC);
+        
+            if (!$existente) {
+               // Agregar a la tabla DetallesPedidos
+           $stmt_detalle = $pdo->prepare("INSERT INTO DetallesPedidos (PedidoID, ArticuloID, Cantidad, PrecioUnitario, TotalPedido) VALUES (?, ?, ?, ?, ?)");
+           $stmt_detalle->execute([$pedido_id, $articulo['Codigo'], $cantidad, $precio_unitario, $item_price]);
+    
+            }
+        }
+
+        // Limpiar el carrito
+        unset($_SESSION['carrito']);
+
+        // Confirmar la transacción
+        $pdo->commit();
+
+        // Redireccionar a la página de agradecimiento
+        header("Location: agradecimiento.php");
+        exit();
+    } catch (Exception $e) {
+        // Revertir la transacción en caso de error
+        $pdo->rollBack();
+        echo "Error al procesar la compra: " . $e->getMessage();
+    }
+}
 
 ?>
 
@@ -178,7 +230,7 @@ $total_price += (count($carrito_detalles) * STANDARD_SHIPPING_COST);
                     <button type="submit" name="actualizar_carrito">Actualizar Carrito</button>
                 </div>
             </form>
-            <form action="realizar_compra.php" method="post">
+            <form action="carrito.php" method="post">
                 <div class="cart-buttons">
                     <button type="submit" name="realizar_compra">Realizar Compra</button>
                 </div>
