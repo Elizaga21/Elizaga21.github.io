@@ -77,22 +77,28 @@ header {
 /* Estilos para el contenido principal */
 #container {
   display: flex;
-  align-items: center; 
+  align-items: flex-start;
   padding: 20px;
+  position: relative;
+
 }
 
 #content {
-  flex-grow: 1; 
+  flex-grow: 1;
   display: flex;
-  justify-content: center; 
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-#menu-izquierda {
-  background-color: #f4f4f4;
-  padding: 15px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 250px;
-  margin-right: 10px; 
+.articulo {
+  width: calc(33.33% - 20px);
+  margin: 10px;
+  box-sizing: border-box;
+}
+
+.articulo img {
+  width: 100%;
+  height: auto;
 }
 
 input {
@@ -109,9 +115,12 @@ input {
   background-color: #f4f4f4;
   padding: 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 250px;
-  margin-left: 10px; /* Puedes ajustar este valor según sea necesario */
+  width: 280px; /* Ajusta el ancho según tus necesidades */
+  margin-left: 10px;
+  margin-right: 10px; 
+  /* Puedes ajustar este valor según sea necesario */
 }
+
 
 h2 {
   font-size: 20px;
@@ -173,12 +182,14 @@ input[type="range"] {
   }
  }
 
+ 
+
 /* Estilos para el footer */
 footer {
   background-color: black;
   color: #fff;
   padding: 45px 0;
-  bottom: 0;
+  position: absolute;
   left: 0;
   right: 0;
   z-index: 1;

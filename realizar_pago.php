@@ -10,51 +10,107 @@ $is_customer = $user_authenticated && $_SESSION['rol'] === 'cliente';
 
 // Verificar si se ha enviado el formulario de pago
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_pago']) && $is_customer) {
-    try {
-        // Aquí procesarías la información de pago y realizarías las operaciones necesarias
-        // Puedes obtener información adicional del carrito y del usuario desde la sesión
 
-        if ($_POST['forma_pago'] === 'tarjeta') {
-            // Información simulada de la tarjeta de crédito (deberías usar una pasarela de pago real)
-            $numero_tarjeta = $_POST['numero_tarjeta'];
-            $fecha_expiracion = $_POST['fecha_expiracion'];
-            $cvv = $_POST['cvv'];
+        // Obtén el token de Stripe desde la solicitud
+        $token = $_POST['stripeToken'];
 
-            // Validar la tarjeta (esto es solo un ejemplo, utiliza una pasarela de pago real)
-            if (validar_tarjeta($numero_tarjeta, $fecha_expiracion, $cvv)) {
-                // Proceso de pago exitoso
+        // Utiliza el token para procesar el pago con Stripe
+        // Aquí deberías realizar las operaciones necesarias (cargar la tarjeta, registrar la transacción, etc.)
+        // Puedes utilizar la biblioteca oficial de Stripe para PHP
+        require 'vendor/autoload.php';
+        \Stripe\Stripe::setApiKey('TU_CLAVE_SECRETA_DE_PRUEBA');
 
-                // Después de procesar el pago
-                $_SESSION['pago_confirmado'] = true;
+        try {
+            $charge = \Stripe\Charge::create([
+                'amount' => 1000,  // Monto en centavos
+                'currency' => 'usd',
+                'description' => 'Compra de prueba',
+                'source' => $token,
+            ]);
 
-                // Redireccionar al usuario con un mensaje de alerta en JavaScript
-                echo '<script>alert("Pago realizado correctamente."); window.location.href="agradecimiento.php";</script>';
-                exit();
-            } else {
-                throw new Exception("Error en la validación de la tarjeta de crédito.");
-            }
-        } elseif ($_POST['forma_pago'] === 'paypal') {
-            // Aquí procesarías el pago con PayPal (deberías usar la API de PayPal o SDK)
-            // Simplemente devolveré true para este ejemplo simulado
-            $pago_con_paypal_exitoso = true;
+            // Pago exitoso, realiza las operaciones adicionales necesarias
+            $payment_intent = $charge->payment_intent;
 
-            if ($pago_con_paypal_exitoso) {
-                // Proceso de pago con PayPal exitoso
+            // Aquí podrías registrar la transacción en tu base de datos
+            registrar_transaccion($payment_intent);
 
-                // Después de procesar el pago
-                $_SESSION['pago_confirmado'] = true;
+            // Actualizar el estado del pedido, enviar correos electrónicos de confirmación, etc.
 
-                // Redireccionar al usuario con un mensaje de alerta en JavaScript
-                echo '<script>alert("Pago con PayPal realizado correctamente."); window.location.href="agradecimiento.php";</script>';
-                exit();
-            } else {
-                throw new Exception("Error en el pago con PayPal.");
-            }
+            $_SESSION['pago_confirmado'] = true;
+
+            echo '<script>alert("Pago realizado correctamente."); window.location.href="agradecimiento.php";</script>';
+            exit();
+        } catch (\Stripe\Exception\CardException $e) {
+            // Error de tarjeta
+            throw new Exception("Error de tarjeta: " . $e->getMessage());
+        } catch (\Stripe\Exception\RateLimitException $e) {
+            // Error de límite de tasa
+            throw new Exception("Error de límite de tasa: " . $e->getMessage());
+        } catch (\Stripe\Exception\InvalidRequestException $e) {
+            // Error de solicitud inválida
+            throw new Exception("Error de solicitud inválida: " . $e->getMessage());
+        } catch (\Stripe\Exception\AuthenticationException $e) {
+            // Error de autenticación
+            throw new Exception("Error de autenticación: " . $e->getMessage());
+        } catch (\Stripe\Exception\ApiConnectionException $e) {
+            // Error de conexión a la API
+            throw new Exception("Error de conexión a la API: " . $e->getMessage());
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            // Error de la API de Stripe
+            throw new Exception("Error de la API de Stripe: " . $e->getMessage());
+        } catch (Exception $e) {
+            // Otros errores
+            throw new Exception("Error al procesar el pago: " . $e->getMessage());
         }
     } catch (Exception $e) {
         echo "Error al procesar el pago: " . $e->getMessage();
     }
-}
+
+ //   try {
+ //       // Aquí procesarías la información de pago y realizarías las operaciones necesarias
+ //       // Puedes obtener información adicional del carrito y del usuario desde la sesión
+//
+ //       if ($_POST['forma_pago'] === 'tarjeta') {
+ //           // Información simulada de la tarjeta de crédito (deberías usar una pasarela de pago real)
+ //           $numero_tarjeta = $_POST['numero_tarjeta'];
+ //           $fecha_expiracion = $_POST['fecha_expiracion'];
+ //           $cvv = $_POST['cvv'];
+//
+ //           // Validar la tarjeta (esto es solo un ejemplo, utiliza una pasarela de pago real)
+ //           if (validar_tarjeta($numero_tarjeta, $fecha_expiracion, $cvv)) {
+ //               // Proceso de pago exitoso
+//
+ //               // Después de procesar el pago
+ //               $_SESSION['pago_confirmado'] = true;
+//
+ //               // Redireccionar al usuario con un mensaje de alerta en JavaScript
+ //               echo '<script>alert("Pago realizado correctamente."); window.location.href="agradecimiento.php";</script>';
+ //               exit();
+ //           } else {
+ //               throw new Exception("Error en la validación de la tarjeta de crédito.");
+ //           }
+ //       } elseif ($_POST['forma_pago'] === 'paypal') {
+ //           // Aquí procesarías el pago con PayPal (deberías usar la API de PayPal o SDK)
+ //           // Simplemente devolveré true para este ejemplo simulado
+ //           $pago_con_paypal_exitoso = true;
+//
+ //           if ($pago_con_paypal_exitoso) {
+ //               // Proceso de pago con PayPal exitoso
+//
+ //               // Después de procesar el pago
+ //               $_SESSION['pago_confirmado'] = true;
+//
+ //               // Redireccionar al usuario con un mensaje de alerta en JavaScript
+ //               echo '<script>alert("Pago con PayPal realizado correctamente."); window.location.href="agradecimiento.php";</script>';
+ //               exit();
+ //           } else {
+ //               throw new Exception("Error en el pago con PayPal.");
+ //           }
+ //       }
+ //   } catch (Exception $e) {
+ //       echo "Error al procesar el pago: " . $e->getMessage();
+ //   }
+
 
 // Si el usuario no está autenticado o ya ha confirmado el pago, redirigir a otra página
 if (!$is_customer || isset($_SESSION['pago_confirmado'])) {
@@ -67,6 +123,12 @@ function validar_tarjeta($numero_tarjeta, $fecha_expiracion, $cvv) {
     // Aquí deberías utilizar una pasarela de pago real para validar la tarjeta
     // Simplemente devolveré true para este ejemplo simulado
     return true;
+}
+
+function registrar_transaccion($payment_intent) {
+    // Aquí implementa la lógica para registrar la transacción en tu base de datos
+    // Puedes almacenar información como el ID del intento de pago, el monto, la fecha, etc.
+    // Ejemplo: INSERT INTO transacciones (payment_intent_id, monto, fecha) VALUES ('$payment_intent', 1000, NOW());
 }
 ?>
 
