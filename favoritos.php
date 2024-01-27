@@ -71,13 +71,21 @@ $favoritos = $stmt->fetchAll();
             margin: 0;
         }
 
-    .favoritos-container {
+
+        .container {
+            max-width: 800px; 
+            width: 100%;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 20px auto; 
+        }
+        .favoritos-container {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
-        max-width: 800px;
-            width: 100%;
-            margin: auto;
     }
 
     .favorito {
@@ -96,7 +104,6 @@ $favoritos = $stmt->fetchAll();
         border-radius: 8px;
         margin-top: 15px;
     }
-
 
 
         .favorito-icon, .carrito-icon {
@@ -137,8 +144,9 @@ $favoritos = $stmt->fetchAll();
         <?php else : ?>
             <p>No tienes ningún artículo marcado como favorito.</p>
         <?php endif; ?>
-  
-    <?php include 'footer.php'; ?>
-    
+        </div>
+ 
+        <?php include 'footer.php'; ?>
 </body>
 </html>
+  
