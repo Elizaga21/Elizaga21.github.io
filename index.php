@@ -26,6 +26,7 @@ session_start();
                         <?php include 'buscar_articulo.php'; ?> <!-- Agregamos la búsqueda aquí -->
 
                      <?php   include 'home.php'; ?>
+                     
                
         </div>
 

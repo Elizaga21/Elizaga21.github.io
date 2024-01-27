@@ -136,6 +136,7 @@ if ($stmt) {
         echo "<a href='home.php?pagina={$i}&orden={$orden}&busqueda={$busqueda}' class='pagination-link {$activeClass}'>{$i}</a>";
       }
     echo "</div>";
+    
 } else {
     echo "Error en la consulta de la base de datos.";
 }

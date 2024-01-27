@@ -11,12 +11,12 @@ if (isset($_GET['codigo_articulo'])) {
     $articulo = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$articulo) {
-        // Manejar el caso cuando el artículo no se encuentra
+        
         header("Location: index.php");
         exit();
     }
 } else {
-    // Manejar el caso cuando no se proporciona un código de artículo
+    
     header("Location: index.php");
     exit();
 }
@@ -32,7 +32,7 @@ if (isset($_GET['codigo_articulo'])) {
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>   
-      <!-- Agrega estas líneas para incluir Bootstrap y jQuery -->
+ 
       <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -112,7 +112,7 @@ if (isset($_GET['codigo_articulo'])) {
     }
 
     .carousel-inner {
-            max-width: 400px; /* Ajusta el ancho máximo del carrusel según tu preferencia */
+            max-width: 400px; 
             margin: 0 auto;
         }
 

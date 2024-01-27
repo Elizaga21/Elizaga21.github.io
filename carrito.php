@@ -72,11 +72,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
         $fecha_pedido = date('Y-m-d');
         $estado_pedido = 'Pendiente';
 
-        $stmt_pedido = $pdo->prepare("INSERT INTO Pedidos (UsuarioID, Fecha, EstadoPedido) VALUES (?, ?, ?)");
-        $stmt_pedido->execute([$usuario_id, $fecha_pedido, $estado_pedido]);
+        $stmt_datos_envio = $pdo->prepare("SELECT direccion, localidad, provincia, pais, codpos FROM usuarios WHERE id = ?");
+        $stmt_datos_envio->execute([$usuario_id]);
+        $datos_envio_usuario = $stmt_datos_envio->fetch(PDO::FETCH_ASSOC);
+        
+        // Insertar en la tabla Pedidos
+        $stmt_pedido = $pdo->prepare("INSERT INTO Pedidos (UsuarioID, Fecha, EstadoPedido, DireccionEnvio, LocalidadEnvio, ProvinciaEnvio, PaisEnvio, CodPosEnvio, FormaPago) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt_pedido->execute([
+            $usuario_id,
+            $fecha_pedido,
+            $estado_pedido,
+            $datos_envio_usuario['direccion'],
+            $datos_envio_usuario['localidad'],
+            $datos_envio_usuario['provincia'],
+            $datos_envio_usuario['pais'],
+            $datos_envio_usuario['codpos'],
+            'Tarjeta de Crédito' 
+        ]);
+        
         $pedido_id = $pdo->lastInsertId();
-
-
         // Agregar detalles del pedido
         foreach ($carrito_detalles as $articulo) {
             $cantidad = $_SESSION['carrito'][$articulo['Codigo']];
@@ -107,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
         // Confirmar la transacción
         $pdo->commit();
 
-        header("Location: realizar_pago.php");
+        header("Location: process.php");
         exit();
     } catch (Exception $e) {
         // Revertir la transacción en caso de error
