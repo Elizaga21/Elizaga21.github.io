@@ -1,20 +1,13 @@
 <style>
 .container {
-    max-width: 800px;
+    max-width: 400px;
     margin: 0 auto;
-}
-
-.container h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    text-align: center;
-    color: #333;
 }
 
 .container div {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction: column; /* Cambia la dirección del contenedor a columna */
+    align-items: center; /* Centra los elementos en el eje horizontal */
 }
 
 .container img {
@@ -28,17 +21,25 @@
     font-size: 18px;
     margin: 10px 0;
     color: #333;
+    text-align: center;
+}
+
+.container .collection-info {
+    margin-top: 10px; /* Agrega separación entre el nombre y la información de la colección */
+    text-align: center;
 }
 
 .container p {
     font-size: 16px;
-    margin-bottom: 15px;
+    margin: 5px 0; /* Ajusta el margen para separar los elementos */
     color: #555;
 }
 
 .container form {
     display: flex;
     align-items: center;
+    justify-content: center;
+    margin-top: 10px; /* Agrega separación entre la información y los botones */
 }
 
 .container form input {
@@ -54,6 +55,7 @@
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
+    margin-right: 5px;
 }
 
 .container form button:hover {
@@ -67,13 +69,12 @@
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 10px;
+    margin-left: 5px;
 }
 
 .btn-favorito:hover {
     background-color: #c0392b;
 }
-
 </style>
 <?php
 include 'db_connection.php';
@@ -86,27 +87,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $coleccion = $_POST['coleccion'];
     $precio = $_POST['precio'];
 
-    $query = "SELECT * FROM Articulos WHERE Nombre LIKE :nombreArticulo";
+    $query = "SELECT Articulos.* FROM Articulos 
+              INNER JOIN Categorias ON Articulos.CategoriaID = Categorias.CategoriaID
+              WHERE Articulos.Nombre LIKE :nombreArticulo";
 
     // Agrega condiciones adicionales según los filtros seleccionados
     if (!empty($escala)) {
-        $query .= " AND Escala = :escala";
+        $query .= " AND Categorias.Escala = :escala";
     }
 
     if (!empty($marca)) {
-        $query .= " AND Marca = :marca";
+        $query .= " AND Categorias.Marca = :marca";
     }
 
     if (!empty($tipoVehiculo)) {
-        $query .= " AND TipoVehiculo = :tipoVehiculo";
+        $query .= " AND Categorias.Nombre = :tipoVehiculo";
     }
 
     if (!empty($coleccion)) {
-        $query .= " AND Coleccion = :coleccion";
+        $query .= " AND Categorias.Coleccion = :coleccion";
     }
 
     if (!empty($precio)) {
-        $query .= " AND Precio <= :precio";
+        $query .= " AND Articulos.Precio <= :precio";
     }
 
     $stmt = $pdo->prepare($query);
@@ -138,15 +141,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     ob_start();  // Inicia el almacenamiento en búfer de salida
     if ($stmt->rowCount() > 0) {
+        echo "<div class='container'>";  // Mueve la apertura del contenedor fuera del bucle
         while ($articulo = $stmt->fetch(PDO::FETCH_ASSOC)) {
             // Mostrar resultados
-            echo "<div class='container'>";
-            echo "<h2>Detalles del Artículo</h2>";
+         
             echo "<div>";
             echo "<img src='{$articulo['Imagen']}' alt='{$articulo['Nombre']}'>";
             echo "<h3>{$articulo['Nombre']}</h3>";
-            echo "<p>{$articulo['Descripcion']}</p>";
+            echo "<div class='collection-info'>";
+            echo "<p>Miniatura de Colección a escala {$articulo['Escala']}</p>";
             echo "<p>Precio: {$articulo['Precio']} €</p>";
+            echo "</div>";
             echo "<form action='carrito.php' method='post'>";
             echo "<input type='hidden' name='codigo_articulo' value='{$articulo['Codigo']}'>";
             echo "<input type='number' name='cantidad' value='1' min='1'>";
@@ -161,6 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo "</div>";
             echo "</div>";
         }
+        echo "</div>";  // Cierra el contenedor
     } else {
         echo "No se encontraron resultados para la búsqueda.";
     }

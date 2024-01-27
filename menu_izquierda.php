@@ -88,6 +88,7 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
         var coleccion = $('#colecciones').val();
         var precio = $('#precio').val();
 
+        
         // Obtener nombre del artículo a buscar
         var nombreArticulo = $('#nombreArticulo').val();
 
