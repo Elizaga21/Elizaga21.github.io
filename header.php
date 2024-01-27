@@ -1,32 +1,34 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
   session_start();
-}
+
 require 'db_connection.php'; 
 
-function obtenerNombreDeUsuario() {
+// Definir la función obtenerNombreDeUsuario si no está definida
+if (!function_exists('obtenerNombreDeUsuario')) {
+  function obtenerNombreDeUsuario() {
+      global $pdo;
 
+      if (isset($_SESSION['user_id'])) {
+          $user_id = $_SESSION['user_id'];
 
-  if (isset($_SESSION['user_id'])) {
-      $user_id = $_SESSION['user_id'];
+          $stmt = $pdo->prepare("SELECT nombre FROM usuarios WHERE id = ?");
+          $stmt->execute([$user_id]);
+          $result = $stmt->fetch();
 
-      $stmt = $pdo->prepare("SELECT nombre FROM usuarios WHERE id = ?");
-      $stmt->execute([$user_id]);
-      $result = $stmt->fetch();
-
-      if ($result) {
-          return $result['nombre'];
+          if ($result) {
+              $_SESSION['nombre'] = $result['nombre'];
+              return $result['nombre'];
+          }
       }
   }
-
-  // Si no se puede obtener el nombre de la base de datos, puedes devolver un valor por defecto
-  return "UsuarioEjemplo";
 }
 
 // Si $_SESSION['nombre'] no está definido, intenta obtenerlo
 if (!isset($_SESSION['nombre'])) {
   $_SESSION['nombre'] = obtenerNombreDeUsuario();
 }
+
+
 
 function calcularPrecioTotal($carrito) {
   $codigo_articulos = array_keys($carrito);
