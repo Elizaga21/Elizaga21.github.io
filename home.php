@@ -155,13 +155,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function agregarFavorito(codigoArticulo, icon) {
-        // Lógica para agregar a favoritos (puedes hacer una petición AJAX aquí)
-        // ...
-
-        // Cambiar el color del corazón y guardar en favoritos.php
+        // Cambiar el color del corazón
         icon.classList.toggle('fas');
         icon.classList.toggle('far');
         icon.style.color = icon.classList.contains('fas') ? 'red' : 'inherit';
+
+        // Realizar una petición AJAX para actualizar la base de datos
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'favoritos.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onload = function() {
+            // Manejar la respuesta si es necesario
+            console.log(xhr.responseText);
+        };
+        xhr.send(`codigo_articulo=${codigoArticulo}&accion=${icon.classList.contains('fas') ? 'agregar' : 'quitar'}`);
     }
 });
+
 </script>
