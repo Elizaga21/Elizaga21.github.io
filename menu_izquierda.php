@@ -67,9 +67,17 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
     </select>
 
     <!-- Precio -->
-    <label for="precio">Precio:</label>
-    <input type="range" id="precio" name="precio" min="0" max="1000" value="0" step="10" oninput="actualizarPrecio()">
-    <span id="precio-valor">0 €</span>
+  <!-- Precio -->
+<label for="precio">Precio:</label>
+<select id="precio" name="precio">
+    <option value="" selected></option>
+    <option value="0-20">0 - 20 €</option>
+    <option value="20-40">20 - 40 €</option>
+    <option value="40-60">40 - 60 €</option>
+    <option value="60-80">60 - 80 €</option>
+    <option value="80+">80€ +</option>
+</select>
+
 
     <button id="button" onclick="aplicarFiltros()">Aplicar</button>
 </nav>
@@ -89,6 +97,15 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
         var precio = $('#precio').val();
 
         
+       var precioMin;
+       var precioMax;
+
+    if (precio!== "") {
+        var precioArray = precio.split('-');
+        precioMin = parseFloat(precioArray[0]);
+        precioMax = parseFloat(precioArray[1]);
+    }
+        
         // Obtener nombre del artículo a buscar
         var nombreArticulo = $('#nombreArticulo').val();
 
@@ -102,7 +119,8 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
                 marca: marca,
                 tipoVehiculo: tipoVehiculo,
                 coleccion: coleccion,
-                precio: precio
+                precioMin: precioMin,  // Cambiado para enviar precioMin y precioMax por separado
+                precioMax: precioMax   
             },
             success: function (response) {
                 // Actualizar el contenido de la página con los resultados de la búsqueda

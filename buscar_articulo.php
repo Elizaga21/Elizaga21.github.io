@@ -85,7 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $marca = $_POST['marca'];
     $tipoVehiculo = $_POST['tipoVehiculo'];
     $coleccion = $_POST['coleccion'];
-    $precio = $_POST['precio'];
+    $precioMin = isset($_POST['precioMin']) ? $_POST['precioMin'] : null;
+    $precioMax = isset($_POST['precioMax']) ? $_POST['precioMax'] : null;
 
     $query = "SELECT Articulos.* FROM Articulos 
               INNER JOIN Categorias ON Articulos.CategoriaID = Categorias.CategoriaID
@@ -108,9 +109,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query .= " AND Categorias.Coleccion = :coleccion";
     }
 
-    if (!empty($precio)) {
-        $query .= " AND Articulos.Precio <= :precio";
+    if (!empty($precioMin) && !empty($precioMax)) {
+        $query .= " AND Articulos.Precio BETWEEN :precioMin AND :precioMax";
     }
+    
 
     $stmt = $pdo->prepare($query);
 
@@ -133,8 +135,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindValue(':coleccion', $coleccion, PDO::PARAM_STR);
     }
 
-    if (!empty($precio)) {
-        $stmt->bindValue(':precio', $precio, PDO::PARAM_INT);
+    if (!empty($precioMin) && !empty($precioMax)) {
+        $stmt->bindValue(':precioMin', $precioMin, PDO::PARAM_INT);
+        $stmt->bindValue(':precioMax', $precioMax, PDO::PARAM_INT);
     }
 
     $stmt->execute();
