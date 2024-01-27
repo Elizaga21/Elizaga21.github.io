@@ -1,8 +1,12 @@
 <?php
-include 'header.php';
 session_start();
 
+include 'header.php';
+
+
 require 'db_connection.php';
+
+$usuarioID = $_SESSION['user_id'];
 
 
 if (isset($_POST['agregar_carrito'])) {
@@ -10,6 +14,9 @@ if (isset($_POST['agregar_carrito'])) {
     $cantidad = $_POST['cantidad'];
 
     $_SESSION['carrito'][$codigo_articulo] = $cantidad;
+
+     header("Location: carrito.php?added_to_cart=true");
+    exit();
 }
 
 
@@ -35,20 +42,19 @@ if (!empty($_SESSION['carrito'])) {
 // Procesar la actualización del carrito si se ha enviado el formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_carrito'])) {
     foreach ($_POST['cantidad'] as $codigo_articulo => $cantidad) {
-        // Asegúrate de que la cantidad esté en el rango permitido (1 a 10)
+     
         $cantidad = max(1, min(10, intval($cantidad)));
         $_SESSION['carrito'][$codigo_articulo] = $cantidad;
     }
 }
 
-// Calculate the total price for the entire order
 $total_price = 0.0;
 foreach ($carrito_detalles as $articulo) {
     $item_price = $articulo['Precio'] * $_SESSION['carrito'][$articulo['Codigo']];
     $total_price += $item_price;
 }
 
-// Add the shipping cost to the total
+// Añade el coste del pedido con el coste del envío
 $total_price += (count($carrito_detalles) * STANDARD_SHIPPING_COST);
 
 // Procesar la compra si se ha enviado el formulario
@@ -101,10 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
         // Confirmar la transacción
         $pdo->commit();
 
-        
-    
-
-        // Redireccionar a la página de agradecimiento
         header("Location: realizar_pago.php");
         exit();
     } catch (Exception $e) {
@@ -153,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
         }
 
         .cart-item img {
-            max-width: 150px; /* Ajusta el tamaño de la imagen */
+            max-width: 150px; 
             height: auto;
             margin-bottom: 10px;
         }
@@ -178,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
         }
 
         input[name^="cantidad"] {
-            width: 50px; /* Ajusta el ancho del input de cantidad */
+            width: 50px; 
         }
 
         button {
@@ -202,6 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
 
         .continue-shopping {
             margin-top: 20px;
+            text-align: right;
         }
 
         .continue-shopping a {
@@ -211,13 +214,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
             padding: 10px 20px;
             border: none;
             cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .continue-shopping a:hover {
+                   border-radius: 5px;
+                   transition: background-color 0.3s ease, color 0.3s ease;
+               }
+       
+         .continue-shopping a:hover {
             background-color: #218838;
-        }
+         }
+       
+               .empty-cart-container {
+           text-align: center;
+           padding: 20px;
+           background-color: #fff;
+           border: 1px solid #ddd;
+           border-radius: 8px;
+           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+           margin: 20px auto;
+       }
+       
+       .empty-cart-icon {
+           font-size: 48px;
+           color: #6c757d;
+           margin-bottom: 10px;
+       }
+       
+       .empty-cart-message {
+           font-size: 18px;
+           color: #6c757d;
+           margin-bottom: 20px;
+       }
+       
+
     </style>
 </head>
 <body>
@@ -237,7 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
                         </p>
                         <p>Precio: <?php echo $articulo['Precio']; ?> €</p>
                         <p>Total: <?php echo ($articulo['Precio'] * $_SESSION['carrito'][$articulo['Codigo']]); ?> €</p>
-                        <a href="eliminar_del_carrito.php?codigo_articulo=<?php echo $articulo['Codigo']; ?>">Eliminar</a>
+                        <a href="eliminar_del_carrito.php?codigo_articulo=<?php echo $articulo['Codigo']; ?>">Eliminar del Carrito</a>
                     </div>
                 <?php endforeach; ?>
 
@@ -253,12 +280,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
                     <button type="submit" name="realizar_compra">Realizar Pedido</button>
                 </div>
             </form>
-        <?php else: ?>
-            <p class="empty-cart">El carrito está vacío.</p>
-        <?php endif; ?>
-        <div class="continue-shopping">
-            <a href="index.php">Seguir Comprando</a>
-        </div>
+               <?php else: ?>
+                   <div class="empty-cart-container">
+           <i class="fas fa-shopping-cart empty-cart-icon"></i>
+           <p class="empty-cart-message">El carrito está vacío.</p>
+            </div>
+       
+               <?php endif; ?>
+               <div class="continue-shopping">
+                   <a href="index.php">Seguir Comprando</a>
+               </div>
     </div>
 
     <?php include 'footer.php'; ?>

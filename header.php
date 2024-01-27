@@ -102,6 +102,16 @@ function calcularPrecioTotal($carrito) {
           }
 
           echo '</a></li>';
+
+          // Verificar si se ha añadido un artículo al carrito desde esta página
+          if (isset($_GET['added_to_cart']) && $_GET['added_to_cart'] === 'true') {
+            // Actualizar la sesión del carrito (si es necesario)
+
+          
+            // Redirigir nuevamente a carrito.php sin el parámetro added_to_cart
+            header("Location: carrito.php");
+            exit();
+          }
           break;
 
 
