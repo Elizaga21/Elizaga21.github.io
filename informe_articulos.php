@@ -47,7 +47,6 @@ if (isset($_GET['eliminado']) && $_GET['eliminado'] == 'true') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Informe de Artículos</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -73,7 +72,7 @@ if (isset($_GET['eliminado']) && $_GET['eliminado'] == 'true') {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-top: 50px; /* Ajusta según sea necesario */
+    margin-top: 50px; 
 }
 
 h2, h3 {
@@ -142,8 +141,8 @@ h2, h3 {
     }
 
     .table th {
-        background-color: #000; /* Cambiado a negro */
-         color: #ff0; /* Cambiado a amarillo */
+        background-color: #000; 
+         color: #ff0; 
     }
 
     .table img {
