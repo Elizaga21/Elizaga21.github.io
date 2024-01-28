@@ -23,7 +23,15 @@ function obtenerCategoriaPorID($pdo, $categoriaID) {
 
 // Función para actualizar una categoría
 function actualizarCategoria($pdo, $categoriaID, $nombre, $descripcion, $categoriaPadreID, $activo, $escala, $marca, $coleccion) {
-    $stmt = $pdo->prepare("UPDATE Categorias SET Nombre = ?, Descripcion = ?, CategoriaPadreID = ?, Activo = ?, Escala = ?, Marca = ?, Coleccion = ? WHERE CategoriaID = ?");
+    $stmt = $pdo->prepare("UPDATE Categorias SET 
+                           Nombre = ?,
+                           Descripcion = ?,
+                           CategoriaPadreID = ?,
+                           Activo = ?,
+                           Escala = ?,
+                           Marca = ?,
+                           Coleccion = ?
+                           WHERE CategoriaID = ?");
     return $stmt->execute([$nombre, $descripcion, $categoriaPadreID, $activo, $escala, $marca, $coleccion, $categoriaID]);
 }
 
@@ -57,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $coleccion = $_POST['coleccion'];
 
                 if (actualizarCategoria($pdo, $categoriaID, $nombre, $descripcion, $categoriaPadreID, $activo, $escala, $marca, $coleccion)) {
-                    echo "Categoría actualizada correctamente.";
                 } else {
                     echo "Error al actualizar la categoría.";
                 }
@@ -148,7 +155,7 @@ form label {
 
 form input,
 form textarea {
-    width: 50%;
+    width: 100%;
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
@@ -163,12 +170,12 @@ form input[type="checkbox"] {
 form input[type="submit"] {
     background-color: #007bff;
     color: #fff;
-    padding: 10px 15px;
+    padding: 12px 20px; 
     border: none;
-    border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
+
 
 form input[type="submit"]:hover {
     background-color: #0056b3;
@@ -181,10 +188,10 @@ form input[type="submit"]:hover {
 }
 
 .lista-categoria li {
-    margin-bottom: 20px; /* Aumenté el espacio entre las categorías */
+    margin-bottom: 20px;
     background-color: #fff;
     padding: 15px;
-    border-radius: 10px;
+    border-radius: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
@@ -192,7 +199,7 @@ form input[type="submit"]:hover {
 }
 
 .lista-categoria li div {
-    flex-grow: 1; /* El contenido principal ocupa todo el espacio disponible */
+    flex-grow: 1; 
 }
 
 /* Estilos de los botones de actualizar y eliminar */
@@ -201,20 +208,46 @@ form input[type="submit"]:hover {
 }
 
 
-.lista-categoria li form[style="display: inline;"] input[type="submit"]:hover {
-    filter: brightness(80%);
+/* Estilos de los botones de actualizar y eliminar */
+.lista-categoria li form[style="display: inline;"] input[type="submit"] {
+    background-color: #dc3545;
+    color: #fff;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 /* Estilos de los botones de actualizar y eliminar */
+<!-- Estilos de los botones de actualizar y eliminar -->
 .lista-categoria li form[style="display: inline;"] input[type="submit"][value="Actualizar"] {
     background-color: #000;
     color: #fff;
+    padding: 12px 20px;
 }
 
 .lista-categoria li form[style="display: inline;"] input[type="submit"][value="Eliminar"] {
     background-color: #dc3545;
     color: #fff;
+    padding: 12px 20px;
 }
+
+/* Estilo para el botón "Actualizar" */
+.lista-categoria li form[style="display: inline;"] .btn-actualizar {
+    background-color: #336699;
+    color: #fff;
+    padding: 12px 20px;
+}
+
+/* Estilo para el botón "Eliminar" */
+.lista-categoria li form[style="display: inline;"] .btn-eliminar {
+    background-color: #cc0000;
+    color: #fff;
+    padding: 12px 20px;
+}
+
 
 
 
@@ -249,7 +282,7 @@ form input[type="submit"]:hover {
         </form>
 
        <!-- Lista de categorías existentes con opciones de actualización y eliminación -->
-<h3>Categorías Existentes</h3>
+       <h3>Categorías Existentes</h3>
 <ul class="lista-categoria">
     <?php foreach ($categorias as $categoria) : ?>
         <li>
@@ -259,15 +292,41 @@ form input[type="submit"]:hover {
                     <strong>Escala:</strong> <?php echo $categoria['Escala']; ?><br>
                     <strong>Marca:</strong> <?php echo $categoria['Marca']; ?>
                 </div>
+                <!-- Formulario para actualizar la categoría actual -->
                 <form method="post">
                     <input type="hidden" name="categoria_id" value="<?php echo $categoria['CategoriaID']; ?>">
+                    <input type="hidden" name="nombre_actual" value="<?php echo $categoria['Nombre']; ?>">
+                    <input type="hidden" name="descripcion_actual" value="<?php echo $categoria['Descripcion']; ?>">
+                    <input type="hidden" name="categoria_padre_id_actual" value="<?php echo $categoria['CategoriaPadreID']; ?>">
+                    <input type="hidden" name="activo_actual" value="<?php echo $categoria['Activo']; ?>">
+                    <input type="hidden" name="escala_actual" value="<?php echo $categoria['Escala']; ?>">
+                    <input type="hidden" name="marca_actual" value="<?php echo $categoria['Marca']; ?>">
+                    <input type="hidden" name="coleccion_actual" value="<?php echo $categoria['Coleccion']; ?>">
+
                     <input type="hidden" name="accion" value="actualizar">
-                    <input type="submit" value="Actualizar">
+                    <!-- Campos de entrada actualizados con los valores actuales -->
+                    <label>Nombre:</label>
+                    <input type="text" name="nombre" value="<?php echo $categoria['Nombre']; ?>" required>
+                    <label>Descripción:</label>
+                    <textarea name="descripcion" rows="3"><?php echo $categoria['Descripcion']; ?></textarea>
+                    <label>Categoría Padre ID:</label>
+                    <input type="number" name="categoria_padre_id" value="<?php echo $categoria['CategoriaPadreID']; ?>">
+                    <label>Activo:</label>
+                    <input type="checkbox" name="activo" <?php echo $categoria['Activo'] ? 'checked' : ''; ?>>
+                    <label>Escala:</label>
+                    <input type="text" name="escala" value="<?php echo $categoria['Escala']; ?>">
+                    <label>Marca:</label>
+                    <input type="text" name="marca" value="<?php echo $categoria['Marca']; ?>">
+                    <label>Colección:</label>
+                    <input type="text" name="coleccion" value="<?php echo $categoria['Coleccion']; ?>">
+
+                    <input type="submit" class="btn-actualizar" value="Actualizar">
                 </form>
+
                 <form method="post">
                     <input type="hidden" name="categoria_id" value="<?php echo $categoria['CategoriaID']; ?>">
                     <input type="hidden" name="accion" value="eliminar">
-                    <input type="submit" value="Eliminar" onclick="return confirm('¿Estás seguro?')">
+                    <input type="submit" class="btn-eliminar" value="Eliminar" onclick="return confirm('¿Estás seguro?')">
                 </form>
             </div>
         </li>
