@@ -89,7 +89,7 @@ function calcularPrecioTotal($carrito) {
                 break;
             case 'empleado':
               echo '<li><a href="empleado.php"><strong>Mantenimiento</strong></a></li>';            
-                echo '<li><a href="enviar_mailings.php"><strong>Mailings</strong></a></li>';
+                echo '<li><a href="mailings.php"><strong>Mailings</strong></a></li>';
                 echo '<li><a href="perfil.php"><strong>Mi Perfil</strong></a></li>';
                 break;
             case 'cliente':
