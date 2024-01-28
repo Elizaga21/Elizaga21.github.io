@@ -64,19 +64,23 @@
 
 
 </style>
+
 <?php
-// Configuración de paginación
-$articulosPorPagina = 8;
-$paginaActual = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
-$inicio = ($paginaActual - 1) * $articulosPorPagina;
+$articulosPorPagina = 10;
 
-// Configuración de orden y búsqueda
-$orden = isset($_GET['orden']) ? $_GET['orden'] : 'Nombre';
-$busqueda = isset($_GET['busqueda']) ? $_GET['busqueda'] : '';
+// Calcular el número total de artículos
+$totalArticulos = $pdo->query("SELECT COUNT(*) FROM Articulos")->fetchColumn();
 
+// Calcular el número total de páginas
+$totalPaginas = ceil($totalArticulos / $articulosPorPagina);
 
+// Obtener el número de página actual
+$paginaActual = isset($_GET['pagina']) ? (int)$_GET['pagina'] : 1;
 
-// Consulta SQL
+// Calcular el índice inicial del primer artículo en la página actual
+$indiceInicio = ($paginaActual - 1) * $articulosPorPagina;
+
+// Consulta SQL con limit y offset para la paginación
 $sql = "SELECT A.*, C.Nombre AS NombreCategoria, C.Escala AS EscalaCategoria FROM Articulos A
         LEFT JOIN Categorias C ON A.CategoriaID = C.CategoriaID";
 
@@ -85,27 +89,19 @@ if (!empty($busqueda)) {
     $sql .=  " WHERE TRIM(A.Nombre) LIKE '%" . trim($busqueda) . "%'";
 }
 
-$sql .= " ORDER BY A.$orden LIMIT :inicio, :articulosPorPagina";
+$sql .= " LIMIT $indiceInicio, $articulosPorPagina";
 
-$stmt = $pdo->prepare($sql);
-$stmt->bindParam(':inicio', $inicio, PDO::PARAM_INT);
-$stmt->bindParam(':articulosPorPagina', $articulosPorPagina, PDO::PARAM_INT);
-$stmt->execute();
-$Articulos = $stmt->fetchAll();
+$stmt = $pdo->query($sql);
 
 // Obtener artículos marcados como favoritos
 $articulosFavoritos = isset($_SESSION['articulos_favoritos']) ? $_SESSION['articulos_favoritos'] : [];
 
-// Consulta para obtener el total de artículos (para la paginación)
-$totalArticulos = $pdo->query("SELECT COUNT(*) FROM Articulos")->fetchColumn();
-$totalPaginas = ceil($totalArticulos / $articulosPorPagina);
-
 if ($stmt) {
     echo "<div class='articulos-container'>";
-    foreach ($Articulos as $articulo) {
+    while ($articulo = $stmt->fetch(PDO::FETCH_ASSOC)) {
         // Verificar si el artículo está marcado como favorito
         $esFavorito = in_array($articulo['Codigo'], $articulosFavoritos);
-        
+
         // Mostrar cada artículo
         echo "<div class='articulo'>
                 <a href='detalle_articulo.php?codigo_articulo={$articulo['Codigo']}'>
@@ -129,27 +125,23 @@ if ($stmt) {
 
     echo "</div>";
 
-    // Mostrar enlaces de paginación
+    // Agregar enlaces de paginación
     echo "<div class='paginacion'>";
     for ($i = 1; $i <= $totalPaginas; $i++) {
-        $activeClass = $i == $paginaActual ? 'active' : '';
-        echo "<a href='home.php?pagina={$i}&orden={$orden}&busqueda={$busqueda}' class='pagination-link {$activeClass}'>{$i}</a>";
-      }
+        echo "<a href='?pagina=$i'>$i</a>";
+    }
     echo "</div>";
-    
 } else {
     echo "Error en la consulta de la base de datos.";
 }
 ?>
 
-
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const heartIcons = document.querySelectorAll('.heart-icon');
 
     heartIcons.forEach(icon => {
-        icon.addEventListener('click', function() {
+        icon.addEventListener('click', function () {
             const codigoArticulo = this.getAttribute('data-codigo');
             agregarFavorito(codigoArticulo, this);
         });
@@ -165,12 +157,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'favoritos.php', true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onload = function() {
+        xhr.onload = function () {
             // Manejar la respuesta si es necesario
             console.log(xhr.responseText);
         };
         xhr.send(`codigo_articulo=${codigoArticulo}&accion=${icon.classList.contains('fas') ? 'agregar' : 'quitar'}`);
     }
 });
-
 </script>

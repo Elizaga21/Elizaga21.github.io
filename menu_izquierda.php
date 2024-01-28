@@ -66,7 +66,6 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
         <?php endforeach; ?>
     </select>
 
-    <!-- Precio -->
   <!-- Precio -->
 <label for="precio">Precio:</label>
 <select id="precio" name="precio">
@@ -109,17 +108,18 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
         // Obtener nombre del artículo a buscar
         var nombreArticulo = $('#nombreArticulo').val();
 
+        
         // Realizar la petición AJAX
         $.ajax({
             type: 'POST',
             url: 'buscar_articulo.php',
             data: {
-                nombreArticulo: nombreArticulo, // Pass the search term
+                nombreArticulo: nombreArticulo, 
                 escala: escala,
                 marca: marca,
                 tipoVehiculo: tipoVehiculo,
                 coleccion: coleccion,
-                precioMin: precioMin,  // Cambiado para enviar precioMin y precioMax por separado
+                precioMin: precioMin,  
                 precioMax: precioMax   
             },
             success: function (response) {
@@ -131,6 +131,34 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
             }
         });
     }
+
+    function cambiarPagina(pagina, orden, nombreArticulo, escala, marca, tipoVehiculo, coleccion, precioMin, precioMax) {
+    // Realizar la petición AJAX con método POST
+    $.ajax({
+        type: 'POST',
+        url: 'home.php',
+        data: {
+            pagina: pagina,
+            orden: orden,
+            nombreArticulo: nombreArticulo,
+            escala: escala,
+            marca: marca,
+            tipoVehiculo: tipoVehiculo,
+            coleccion: coleccion,
+            precioMin: precioMin,
+            precioMax: precioMax
+        },
+        success: function (response) {
+            // Actualizar el contenido de la página con los resultados de la búsqueda
+            $('#content').html(response);
+        },
+        error: function (error) {
+            console.error('Error en la petición AJAX', error);
+        }
+    });
+}
+
+
 </script>
 
 
@@ -155,7 +183,6 @@ $categorias = $stmtCategorias->fetchAll(PDO::FETCH_ASSOC);
         padding: 0.6em 1.5em;
         margin-top: 10px;
         margin-left: auto;
-        /* Esto alinea el botón a la derecha */
     }
 
     #menu-izquierda button:hover {

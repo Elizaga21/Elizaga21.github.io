@@ -1,81 +1,71 @@
 <style>
-.container {
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-.container div {
+  .articulos-container {
     display: flex;
-    flex-direction: column; /* Cambia la dirección del contenedor a columna */
-    align-items: center; /* Centra los elementos en el eje horizontal */
-}
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 
-.container img {
+  .articulo {
+    width: 42%;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .articulo img {
     max-width: 100%;
     height: auto;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
 
-.container h3 {
-    font-size: 18px;
-    margin: 10px 0;
-    color: #333;
-    text-align: center;
-}
+  .articulo h2,
+  .articulo p {
+    margin-top: 10px;
+  }
 
-.container .collection-info {
-    margin-top: 10px; /* Agrega separación entre el nombre y la información de la colección */
-    text-align: center;
-}
-
-.container p {
-    font-size: 16px;
-    margin: 5px 0; /* Ajusta el margen para separar los elementos */
-    color: #555;
-}
-
-.container form {
+  .articulo .iconos {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    margin-top: 10px; /* Agrega separación entre la información y los botones */
-}
+    margin-top: auto;
+  }
 
-.container form input {
-    width: 60px;
-    padding: 5px;
-    margin-right: 10px;
-}
+  .articulo .iconos i {
+    cursor: pointer;
+  }
 
-.container form button {
+  .articulo button {
     background-color: #4CAF50;
     color: white;
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
-    margin-right: 5px;
-}
+    margin-top: 10px;
+  }
 
-.container form button:hover {
+  .articulo button:hover {
     background-color: #45a049;
-}
+  }
 
-.btn-favorito {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    padding: 10px 15px;
+  .paginacion a {
+    display: inline-block;
+    padding: 10px;
+    margin-right: 5px;
+    background-color: #000;
+    color: #fff;
     border-radius: 5px;
-    cursor: pointer;
-    margin-left: 5px;
-}
-
-.btn-favorito:hover {
-    background-color: #c0392b;
-}
+    text-decoration: none;
+    margin-bottom: 10px;
+  }
 </style>
+
 <?php
 include 'db_connection.php';
 
@@ -92,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               INNER JOIN Categorias ON Articulos.CategoriaID = Categorias.CategoriaID
               WHERE Articulos.Nombre LIKE :nombreArticulo";
 
-    // Agrega condiciones adicionales según los filtros seleccionados
     if (!empty($escala)) {
         $query .= " AND Categorias.Escala = :escala";
     }
@@ -118,7 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt->bindValue(':nombreArticulo', "%$nombreArticulo%", PDO::PARAM_STR);
 
-    // Enlaza los parámetros adicionales según sea necesario
     if (!empty($escala)) {
         $stmt->bindValue(':escala', $escala, PDO::PARAM_STR);
     }
@@ -144,38 +132,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     ob_start();  // Inicia el almacenamiento en búfer de salida
     if ($stmt->rowCount() > 0) {
-        echo "<div class='container'>";  // Mueve la apertura del contenedor fuera del bucle
+        echo "<div class='articulos-container'>";  
         while ($articulo = $stmt->fetch(PDO::FETCH_ASSOC)) {
             // Mostrar resultados
-         
-            echo "<div>";
+            echo "<div class='articulo'>"; 
             echo "<img src='{$articulo['Imagen']}' alt='{$articulo['Nombre']}'>";
-            echo "<h3>{$articulo['Nombre']}</h3>";
-            echo "<div class='collection-info'>";
-            echo "<p>Miniatura de Colección a escala {$articulo['Escala']}</p>";
+            echo "<h2>{$articulo['Nombre']}</h2>";
+            echo "<p>{$articulo['Descripcion']}</p>";
             echo "<p>Precio: {$articulo['Precio']} €</p>";
-            echo "</div>";
+            echo "<div class='iconos'>";
+            // Agrega el icono de favorito (corazón)
+            echo "<i class='far fa-heart heart-icon'></i>";
             echo "<form action='carrito.php' method='post'>";
             echo "<input type='hidden' name='codigo_articulo' value='{$articulo['Codigo']}'>";
             echo "<input type='number' name='cantidad' value='1' min='1'>";
             echo "<button type='submit' name='agregar_carrito'>";
             echo "<i class='fas fa-shopping-cart'></i> Agregar al Carrito";
             echo "</button>";
-            // Agrega el icono de favorito (corazón)
-            echo "<button type='button' class='btn-favorito'>";
-            echo "<i class='fas fa-heart'></i> Favorito";
-            echo "</button>";
             echo "</form>";
             echo "</div>";
             echo "</div>";
         }
-        echo "</div>";  // Cierra el contenedor
+        echo "</div>"; 
     } else {
         echo "No se encontraron resultados para la búsqueda.";
     }
     $content = ob_get_clean();  // Obtiene el contenido del búfer y limpia el búfer de salida
 
-    // Enviar el contenido generado de vuelta a la solicitud AJAX
     echo $content;
 } 
 ?>
