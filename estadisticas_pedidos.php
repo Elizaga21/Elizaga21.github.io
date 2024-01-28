@@ -3,15 +3,44 @@ session_start();
 require 'db_connection.php';
 include 'header.php';
 
-if (!isset($_SESSION['user_id']) || ($_SESSION['rol'] !== 'empleado' && $_SESSION['rol'] !== 'administrador')) {
-    header("Location: login.php");
-    exit();
+// Función para modificar el EstadoPedido
+function modificarEstadoPedido($pdo, $pedidoID, $nuevoEstado) {
+    $stmt = $pdo->prepare("UPDATE Pedidos SET EstadoPedido = ? WHERE PedidoID = ?");
+    $stmt->execute([$nuevoEstado, $pedidoID]);
+}
+
+// Función para eliminar un pedido
+function eliminarPedido($pdo, $pedidoID) {
+    $stmtEliminarDetalles = $pdo->prepare("DELETE FROM DetallesPedidos WHERE PedidoID = ?");
+    $stmtEliminarDetalles->execute([$pedidoID]);
+
+    $stmtEliminarPedido = $pdo->prepare("DELETE FROM Pedidos WHERE PedidoID = ?");
+    $stmtEliminarPedido->execute([$pedidoID]);
+}
+
+// Verificar si se envió el formulario para modificar el EstadoPedido
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['modificar_estado'])) {
+        $pedidoID = $_POST['pedido_id'];
+        $nuevoEstado = $_POST['nuevo_estado'];
+        modificarEstadoPedido($pdo, $pedidoID, $nuevoEstado);
+    } elseif (isset($_POST['eliminar_pedido'])) {
+        $pedidoID = $_POST['pedido_id'];
+        eliminarPedido($pdo, $pedidoID);
+    }
 }
 
 // Consulta para obtener estadísticas de pedidos
-$sql = "SELECT EstadoPedido, COUNT(*) as Cantidad FROM Pedidos GROUP BY EstadoPedido";
-$stmt = $pdo->query($sql);
-$estadisticasPedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$sqlEstadisticas = "SELECT EstadoPedido, COUNT(*) as Cantidad FROM Pedidos GROUP BY EstadoPedido";
+$stmtEstadisticas = $pdo->query($sqlEstadisticas);
+$estadisticasPedidos = $stmtEstadisticas->fetchAll(PDO::FETCH_ASSOC);
+
+// Consulta para obtener detalles de pedidos
+$sqlPedidos = "SELECT P.PedidoID, P.UsuarioID, P.EstadoPedido, P.Fecha, D.TotalPedido 
+               FROM Pedidos P 
+               JOIN DetallesPedidos D ON P.PedidoID = D.PedidoID";
+$stmtPedidos = $pdo->query($sqlPedidos);
+$pedidos = $stmtPedidos->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -19,67 +48,75 @@ $estadisticasPedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estadísticas de Pedidos</title>
+    <title>Estadísticas y Detalles de Pedidos</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
     <style>
         body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-}
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+        }
 
-.container {
-    max-width: 800px;
-    width: 90%;
-    margin: 50px auto;
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        .container {
+            max-width: 800px;
+            width: 90%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-h2 {
-    color: #495057;
-}
+        h2 {
+            color: #495057;
+        }
 
-.table-container {
-    margin-top: 20px;
-    overflow-x: auto;
-}
+        .table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
 
-table th,
-table td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #dee2e6;
-}
+        table th,
+        table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
 
-table th {
-    background-color: #007bff;
-    color: #fff;
-}
+        table th {
+            background-color: #007bff;
+            color: #fff;
+        }
 
-table tr:nth-child(even) {
-    background-color: #f8f9fa;
-}
+        table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
 
-table tr:hover {
-    background-color: #e9ecef;
-}
+        table tr:hover {
+            background-color: #e9ecef;
+        }
+
+        .btn-group {
+        margin-right: 10px;
+        margin-bottom: 10px; 
+    }
     </style>
+</head>
 <body>
 
     <div class="container">
-        <h2>Estadísticas de Pedidos</h2>
+        <h2>Estadísticas y Detalles de Pedidos</h2>
+        
+        <!-- Estadísticas de Pedidos -->
         <div class="table-container">
             <table>
                 <tr>
@@ -92,6 +129,58 @@ table tr:hover {
                         <td><?php echo $estadistica['Cantidad']; ?></td>
                     </tr>
                 <?php endforeach; ?>
+            </table>
+        </div>
+
+        <!-- Lista de Pedidos -->
+        <header>
+            <h1>Lista de Pedidos</h1>
+        </header>
+        <div class="table-container">
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>PedidoID</th>
+                        <th>UsuarioID</th>
+                        <th>Estado del Pedido</th>
+                        <th>Fecha</th>
+                        <th>Total del Pedido</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($pedidos as $pedido): ?>
+                        <tr>
+                            <td><?php echo $pedido['PedidoID']; ?></td>
+                            <td><?php echo $pedido['UsuarioID']; ?></td>
+                            <td><?php echo $pedido['EstadoPedido']; ?></td>
+                            <td><?php echo $pedido['Fecha']; ?></td>
+                            <td><?php echo $pedido['TotalPedido']; ?></td>
+                            <td>
+                                <div class="btn-group">
+                                    <!-- Formulario para modificar estado del pedido -->
+                                    <form method="post" action="">
+                                        <input type="hidden" name="pedido_id" value="<?php echo $pedido['PedidoID']; ?>">
+                                        <select name="nuevo_estado" class="form-control">
+                                            <option value="Pendiente">Pendiente</option>
+                                            <option value="En Proceso">En Proceso</option>
+                                            <option value="Enviado">Enviado</option>
+                                            <option value="Completado">Completado</option>
+                                        </select>
+                                        <button type="submit" name="modificar_estado" class="btn btn-primary">Modificar Estado</button>
+                                    </form>
+                                </div>
+                                <div class="btn-group">
+                                    <!-- Formulario para eliminar pedido -->
+                                    <form method="post" action="">
+                                        <input type="hidden" name="pedido_id" value="<?php echo $pedido['PedidoID']; ?>">
+                                        <button type="submit" name="eliminar_pedido" class="btn btn-danger">Eliminar Pedido</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
             </table>
         </div>
     </div>
