@@ -1,7 +1,11 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
   session_start();
+}
 
 require 'db_connection.php'; 
+
+
 
 // Definir la función obtenerNombreDeUsuario si no está definida
 if (!function_exists('obtenerNombreDeUsuario')) {
@@ -29,7 +33,7 @@ if (!isset($_SESSION['nombre'])) {
 }
 
 
-
+if (!function_exists('calcularPrecioTotal')) {
 function calcularPrecioTotal($carrito) {
   $codigo_articulos = array_keys($carrito);
   $placeholders = str_repeat('?,', count($codigo_articulos) - 1) . '?';
@@ -48,7 +52,7 @@ function calcularPrecioTotal($carrito) {
 
   return $total_precio;
 }
-
+}
 ?>
 
 <header>

@@ -1,3 +1,7 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
 <style>
   .articulos-container {
     display: flex;
@@ -131,9 +135,11 @@ if ($stmt) {
         echo "<a href='?pagina=$i'>$i</a>";
     }
     echo "</div>";
+
 } else {
     echo "Error en la consulta de la base de datos.";
 }
+
 ?>
 
 <script>

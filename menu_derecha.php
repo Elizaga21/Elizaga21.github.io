@@ -71,9 +71,9 @@ function iniciarSesion($usuario) {
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 300px; /* Ajusta el valor según tu preferencia */
+    max-width: 300px; 
     width: 100%;
-    margin: 0 auto; /* Centra el formulario horizontalmente */
+    margin: 0 auto; 
 }
 
 h2 {
