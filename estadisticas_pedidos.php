@@ -30,17 +30,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Paginación
+$elementosPorPagina = 10;
+$paginaActual = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
+$indiceInicio = ($paginaActual - 1) * $elementosPorPagina;
+
+// Consulta para obtener detalles de pedidos con límite y desplazamiento
+$sqlPedidos = "SELECT P.PedidoID, P.UsuarioID, P.EstadoPedido, P.Fecha, D.TotalPedido 
+               FROM Pedidos P 
+               JOIN DetallesPedidos D ON P.PedidoID = D.PedidoID
+               LIMIT :indiceInicio, :elementosPorPagina";
+$stmtPedidos = $pdo->prepare($sqlPedidos);
+$stmtPedidos->bindParam(':indiceInicio', $indiceInicio, PDO::PARAM_INT);
+$stmtPedidos->bindParam(':elementosPorPagina', $elementosPorPagina, PDO::PARAM_INT);
+$stmtPedidos->execute();
+$pedidosPaginados = $stmtPedidos->fetchAll(PDO::FETCH_ASSOC);
+
+// Consulta para contar el total de pedidos
+$sqlTotalPedidos = "SELECT COUNT(*) as total FROM Pedidos";
+$stmtTotalPedidos = $pdo->query($sqlTotalPedidos);
+$totalPedidos = $stmtTotalPedidos->fetch(PDO::FETCH_ASSOC)['total'];
+$paginasTotales = ceil($totalPedidos / $elementosPorPagina);
+
 // Consulta para obtener estadísticas de pedidos
 $sqlEstadisticas = "SELECT EstadoPedido, COUNT(*) as Cantidad FROM Pedidos GROUP BY EstadoPedido";
 $stmtEstadisticas = $pdo->query($sqlEstadisticas);
 $estadisticasPedidos = $stmtEstadisticas->fetchAll(PDO::FETCH_ASSOC);
 
-// Consulta para obtener detalles de pedidos
-$sqlPedidos = "SELECT P.PedidoID, P.UsuarioID, P.EstadoPedido, P.Fecha, D.TotalPedido 
-               FROM Pedidos P 
-               JOIN DetallesPedidos D ON P.PedidoID = D.PedidoID";
-$stmtPedidos = $pdo->query($sqlPedidos);
-$pedidos = $stmtPedidos->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -61,7 +77,7 @@ $pedidos = $stmtPedidos->fetchAll(PDO::FETCH_ASSOC);
 
         .container {
             max-width: 800px;
-            width: 90%;
+            width: 120%;
             margin: 50px auto;
             padding: 20px;
             background-color: #fff;
@@ -108,12 +124,46 @@ $pedidos = $stmtPedidos->fetchAll(PDO::FETCH_ASSOC);
         .btn-group {
         margin-right: 10px;
         margin-bottom: 10px; 
-    }
+           }
+       
+           .pagination {
+           display: inline-block;
+           margin-bottom: 0;
+       }
+       
+       .pagination a {
+           color: #007bff;
+           padding: 8px 16px;
+           text-decoration: none;
+           transition: background-color 0.3s;
+           border: 1px solid #ddd;
+       }
+       
+       .pagination a:hover {
+           background-color: #007bff;
+           color: #fff;
+           border: 1px solid #007bff;
+       }
+       
+       .pagination .active a {
+           background-color: #007bff;
+           color: #fff;
+           border: 1px solid #007bff;
+       }
+       
+       .pagination li {
+           display: inline-block;
+           margin-right: 5px;
+       }
+       
+       .pagination li:last-child {
+           margin-right: 0;
+       }
     </style>
 </head>
 <body>
 
-    <div class="container">
+<div class="container">
         <h2>Estadísticas y Detalles de Pedidos</h2>
         
         <!-- Estadísticas de Pedidos -->
@@ -149,7 +199,7 @@ $pedidos = $stmtPedidos->fetchAll(PDO::FETCH_ASSOC);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($pedidos as $pedido): ?>
+                    <?php foreach ($pedidosPaginados as $pedido): ?>
                         <tr>
                             <td><?php echo $pedido['PedidoID']; ?></td>
                             <td><?php echo $pedido['UsuarioID']; ?></td>
@@ -182,6 +232,17 @@ $pedidos = $stmtPedidos->fetchAll(PDO::FETCH_ASSOC);
                     <?php endforeach; ?>
                 </tbody>
             </table>
+        </div>
+
+         <!-- Paginación -->
+         <div style="text-align: center; margin-top: 20px;">
+            <ul class="pagination">
+                <?php for ($i = 1; $i <= $paginasTotales; $i++): ?>
+                    <li class="page-item <?php echo ($i == $paginaActual) ? 'active' : ''; ?>">
+                        <a class="page-link" href="?pagina=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+            </ul>
         </div>
     </div>
 
