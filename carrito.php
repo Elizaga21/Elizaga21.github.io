@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
         // Confirmar la transacción
         $pdo->commit();
 
-        header("Location: process.php");
+        header("Location: pasarela.php");
         exit();
     } catch (Exception $e) {
         // Revertir la transacción en caso de error

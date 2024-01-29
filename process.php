@@ -1,30 +1,32 @@
 <?php
 session_start();
 include 'header.php';
-
+require 'vendor/autoload.php';
 require 'db_connection.php';
 
-
+\Stripe\Stripe::setApiKey('sk_test_51OdDwPEKHkfLvKZ8CnBUWumB8OBhoYl9oePNIPqhQWpdbQgWqyAYKkSSMvMfjEIf3kQwdHd0C0CUyXYcIzc8yuui000W6mUJdu');
 // Verificar si el usuario está autenticado y ha realizado el pago
-$user_authenticated = isset($_SESSION['user_id']);
-$is_customer = $user_authenticated && $_SESSION['rol'] === 'cliente';
+//$user_authenticated = isset($_SESSION['user_id']);
+//$is_customer = $user_authenticated && $_SESSION['rol'] === 'cliente';
 
-if (!$is_customer) {
-    header("Location: index.php");
-    exit();
-}
+$carrito = $_SESSION['carrito'];
+$usuarioID = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
+//if (!$is_customer) {
+//    header("Location: index.php");
+//    exit();
+//}
 
 $paymentMethodId = $_POST['paymentMethodId'];
 
 // Obtén la información del carrito (ajusta según la estructura real de tu carrito)
-$carrito = isset($_SESSION['carrito']) ? $_SESSION['carrito'] : [];
+//$carrito = isset($_SESSION['carrito']) ? $_SESSION['carrito'] : [];
 
 
 // URL a la que se redirigirá al cliente después del pago
 $return_url = 'http://miniaturasycolecciones.infinityfreeapp.com/agradecimiento.php'; // Reemplaza con la URL correcta
 // Utiliza el token para procesar el pago con Stripe
-require 'vendor/autoload.php';
-\Stripe\Stripe::setApiKey('sk_test_51OdDwPEKHkfLvKZ8CnBUWumB8OBhoYl9oePNIPqhQWpdbQgWqyAYKkSSMvMfjEIf3kQwdHd0C0CUyXYcIzc8yuui000W6mUJdu');
+
 
 
 try {
@@ -39,9 +41,11 @@ try {
         'return_url' => $return_url, 
     ]);
 
+
     // Pago exitoso, realiza las operaciones adicionales necesarias
     $payment_intent = $paymentIntent->id;
 
+    $clientSecret = $paymentIntent->client_secret;
     // Registra la transacción en la tabla de Compras
     registrar_transaccion($payment_intent, $_SESSION['user_id'], $carrito);
 
@@ -125,7 +129,7 @@ function registrar_transaccion($payment_intent, $user_id, $carrito) {
     $fecha_compra = date('Y-m-d H:i:s');
 
     foreach ($carrito as $item) {
-        $codigo_articulo = $item['codigo'];  // Obtener el código del artículo del carrito
+        $codigo_articulo = $item['codigo'];  
         $precio = $item['precio'];
         $cantidad = $item['cantidad'];
 
@@ -204,7 +208,10 @@ form {
 </head>
 <body>
 
-<form action="process.php" method="POST">
+<div id="ideal-bank-element"></div>
+
+
+<form id="payment-form" action="process.php" method="POST">
 
 <div class="form-group">
   <label for="email">Email</label>
@@ -231,6 +238,7 @@ form {
   <input type="text" class="form-control" id="name-on-card" name="name-on-card" required>
 </div>
 
+
 <div class="form-group">
   <label for="country">Country</label>
   <select class="form-control" id="country" name="country" required>
@@ -241,7 +249,7 @@ form {
     <option value="España">España</option>
   </select>
 </div>
-
+<input type="hidden" name="paymentMethodId" id="paymentMethodId" value="">
 <button type="submit" class="btn btn-primary">Pay</button>
 
 </form>
@@ -249,42 +257,66 @@ form {
   <?php include 'footer.php'; ?>
 
   <script>
-  var stripe = Stripe('pk_test_51OdDwPEKHkfLvKZ82d07UlaG3aUGH6Ooct7aSpsveedoJtl2btOMOSwgjNSHbKzEPNEfTdlJfe3dPgH6eiyd801g00lV1WKP9j');
+ var stripe = Stripe('pk_test_51OdDwPEKHkfLvKZ82d07UlaG3aUGH6Ooct7aSpsveedoJtl2btOMOSwgjNSHbKzEPNEfTdlJfe3dPgH6eiyd801g00lV1WKP9j');
+var elements = stripe.elements();
 
-  // Crea un PaymentMethod cuando se envía el formulario
-  var form = document.getElementById('payment-form');
-  form.addEventListener('submit', function(event) {
-    event.preventDefault();
+var options = {
 
-    stripe.createPaymentMethod({
-      type: 'card',
-      card: new cardNumberElement(),
-      billing_details: {
-        email: document.getElementById('email').value,
-        name: document.getElementById('name-on-card').value,
-        address: {
-          country: document.getElementById('country').value
-        }
-      }
-    }).then(function(result) {
-      if (result.error) {
-        // Manejar errores de validación
-      } else {
-        // Envía el ID del PaymentMethod a tu backend
-        fetch('/tu/endpoint/backend', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({paymentMethodId: result.paymentMethod.id}),
-        }).then(function(response) {
-          return response.json();
-        }).then(function(responseJson) {
-          // Manejar la respuesta desde tu backend
-        });
-      }
-    });
+  style: {
+    base: {
+      color: '#32325d',
+      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+      fontSmoothing: 'antialiased',
+      fontSize: '16px',
+      '::placeholder': {
+        color: '#aab7c4',
+      },
+    },
+    invalid: {
+      color: '#fa755a',
+      iconColor: '#fa755a',
+    },
+  },
+};
+
+
+var idealBank = elements.create('idealBank', options);
+idealBank.mount('#ideal-bank-element');
+
+var form = document.getElementById('payment-form');
+
+form.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  stripe.confirmIdealPayment(
+    '<?= $clientSecret ?>',
+    {
+      payment_method: {
+        ideal: idealBank,
+        billing_details: {
+          name: document.getElementById('name-on-card').value,
+        },
+      },
+    }
+  ).then(function(result) {
+    if (result.error) {
+      console.error(result.error);
+    } else {
+      
+
+      // Include the payment method ID in the form submission
+      var hiddenInput = document.createElement('input');
+      hiddenInput.setAttribute('type', 'hidden');
+      hiddenInput.setAttribute('name', 'paymentMethodId');
+      hiddenInput.setAttribute('value', result.paymentIntent.payment_method);
+      form.appendChild(hiddenInput);
+
+
+      document.getElementById('paymentMethodId').value = result.paymentIntent.payment_method;
+
+      form.submit();
+    }
   });
+});
+
 </script>
-</body>
-</html>
