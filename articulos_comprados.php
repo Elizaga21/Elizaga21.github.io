@@ -11,12 +11,12 @@ if (!isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'cliente') {
 $user_id = $_SESSION['user_id'];
 
 // Consulta para obtener los artículos comprados por el cliente
-$stmt = $pdo->prepare("SELECT a.Codigo, a.Nombre, a.Descripcion, a.Precio, a.Imagen, c.Nombre AS Categoria, cp.FechaCompra
-                      FROM Compras cp
-                      JOIN Articulos a ON cp.CodigoArticulo = a.Codigo
-                      JOIN Categorias c ON a.CategoriaID = c.CategoriaID
-                      WHERE cp.IDUsuario = ?
-                      ORDER BY cp.FechaCompra DESC");
+$stmt = $pdo->prepare("SELECT a.Nombre, a.Precio, a.Imagen, dp.Cantidad, dp.TotalPedido, p.Fecha, p.EstadoPedido
+                      FROM DetallesPedidos dp
+                      JOIN Articulos a ON dp.ArticuloID = a.Codigo
+                      JOIN Pedidos p ON dp.PedidoID = p.PedidoID
+                      WHERE p.UsuarioID = ? AND p.EstadoPedido IN ('En Proceso', 'Enviado', 'Completado')
+                      ORDER BY p.Fecha DESC");
 
 $stmt->execute([$user_id]);
 $articulosComprados = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -38,53 +38,56 @@ $articulosComprados = $stmt->fetchAll(PDO::FETCH_ASSOC);
             margin: 0;
         }
 
-        .container {
-            text-align: center;
+        #container {
             max-width: 800px;
-            width: 100%;
-            margin: auto;
+            width: 90%;
+            margin: 50px auto;
             padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center; 
         }
 
-        ul {
-            list-style: none;
-            padding: 0;
+
+        .articulos-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
         }
 
-        .container p {
-            color: #495057;
-            margin-top: 20px;
+        .articulo {
+            width: 300px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        .container p::before {
-            content: "\2022"; 
-            color: #007bff;
-            display: inline-block;
-            width: 1em;
-            margin-left: -1em;
+        .articulo strong {
+            display: block;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
         }
 
-        .container p img {
-            max-width: 100%;
-            height: auto;
-            margin-top: 10px;
+        .articulo p {
+            margin: 5px 0;
         }
 
-        .container p a {
-            color: #007bff;
-        }
-
-        .container p a:hover {
-            text-decoration: underline;
-        }
-
-        footer {
-            position: absolute;
-            bottom: 0;
+        .articulo img {
             width: 100%;
-            text-align: center;
+            max-height: 200px;
+            object-fit: cover;
+        }
+
+        .container h2 {
+            text-align: center; 
+            margin-top: 10px;
             padding: 10px;
         }
+      
     </style>
 </head>
 <body>
@@ -94,18 +97,19 @@ $articulosComprados = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="container">
         <h2>Artículos Comprados</h2>
         <?php if (!empty($articulosComprados)): ?>
-            <ul>
+            <div class="articulos-container">
                 <?php foreach ($articulosComprados as $articulo): ?>
-                    <li>
+                    <div class="articulo">
                         <strong><?php echo $articulo['Nombre']; ?></strong>
-                        <p><?php echo $articulo['Descripcion']; ?></p>
-                        <p>Categoría: <?php echo $articulo['Categoria']; ?></p>
+                        <p>Cantidad: <?php echo $articulo['Cantidad']; ?></p>
                         <p>Precio: <?php echo $articulo['Precio']; ?> €</p>
-                        <p>Fecha de Compra: <?php echo $articulo['FechaCompra']; ?></p>
+                        <p>Total del Pedido: <?php echo $articulo['TotalPedido']; ?> €</p>
+                        <p>Fecha de Compra: <?php echo $articulo['Fecha']; ?></p>
+                        <p>Estado del Pedido: <?php echo $articulo['EstadoPedido']; ?></p>
                         <img src="<?php echo $articulo['Imagen']; ?>" alt="<?php echo $articulo['Nombre']; ?>">
-                    </li>
+                    </div>
                 <?php endforeach; ?>
-            </ul>
+            </div>
         <?php else: ?>
             <p>No has comprado ningún artículo aún.</p>
         <?php endif; ?>
