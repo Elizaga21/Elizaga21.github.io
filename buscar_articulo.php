@@ -1,3 +1,4 @@
+
 <style>
   .articulos-container {
     display: flex;
@@ -136,8 +137,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         while ($articulo = $stmt->fetch(PDO::FETCH_ASSOC)) {
             // Mostrar resultados
             echo "<div class='articulo'>"; 
-            echo "<img src='{$articulo['Imagen']}' alt='{$articulo['Nombre']}'>";
-            echo "<h2>{$articulo['Nombre']}</h2>";
+            echo "  <a href='detalle_articulo.php?codigo_articulo={$articulo['Codigo']}'>
+            <img src='{$articulo['Imagen']}' alt='{$articulo['Nombre']}'>
+             <h2>{$articulo['Nombre']}</h2>
+             </a>'>";
             echo "<p>{$articulo['Descripcion']}</p>";
             echo "<p>Precio: {$articulo['Precio']} €</p>";
             echo "<div class='iconos'>";
