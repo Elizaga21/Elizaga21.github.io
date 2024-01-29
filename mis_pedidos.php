@@ -9,9 +9,10 @@ if (isset($_SESSION['user_id']) && $_SESSION['rol'] === 'cliente') {
     $stmt_user->execute([$user_id]);
     $user = $stmt_user->fetch();
 
-    $stmt_orders = $pdo->prepare("SELECT * FROM Pedidos WHERE UsuarioID = ?");
+    $stmt_orders = $pdo->prepare("SELECT * FROM Pedidos WHERE UsuarioID = ? AND activo = true");
     $stmt_orders->execute([$user_id]);
     $orders = $stmt_orders->fetchAll();
+    
 
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -37,12 +38,12 @@ if (isset($_SESSION['user_id']) && $_SESSION['rol'] === 'cliente') {
             $diferenciaHoras = $diferenciaFechas / (60 * 60);
 
             if ($diferenciaHoras <= 24) {
-                // Realizar la cancelación del pedido
-                $stmt_cancel_order = $pdo->prepare("UPDATE Pedidos SET EstadoPedido = 'Cancelado' WHERE PedidoID = ?");
-                $stmt_cancel_order->execute([$pedidoID]);
+                // Desactivar el pedido (cambiar activo a false)
+                $stmt_desactivar_pedido = $pdo->prepare("UPDATE Pedidos SET activo = false WHERE PedidoID = ?");
+                $stmt_desactivar_pedido->execute([$pedidoID]);
             } else {
                 $error_message = "No se puede cancelar el pedido después de 24 horas.";
-        }
+            }
     }
     }
     ?>
