@@ -23,6 +23,7 @@ try {
         'confirm' => true,
         'receipt_email' => 'elisabetaudiovisual@gmail.com',
         'return_url' => $return_url, 
+        'payment_method_types' => ['card', 'ideal'],
     ]);
 
     // Pago exitoso, realiza las operaciones adicionales necesarias
