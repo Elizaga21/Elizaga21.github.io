@@ -91,12 +91,12 @@ require 'db_connection.php';
 
         <div class="form-group">
             <label for="expiration-date">Expiration Date</label>
-            <input type="text" class="form-control" id="expiration-date" name="expiration-date" required>
+            <input type="text" class="form-control" id="expiration-date" name="expiration-date" placeholder="Ej: 12/36" required>
         </div>
 
         <div class="form-group">
             <label for="cvc">CVC</label>
-            <input type="text" class="form-control" id="cvc" name="cvc" required>
+            <input type="text" class="form-control" id="cvc" name="cvc" placeholder="xxx" required>
         </div>
 
         <div class="form-group">

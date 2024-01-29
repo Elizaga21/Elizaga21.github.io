@@ -33,7 +33,7 @@ try {
     registrar_transaccion($payment_intent, $_SESSION['user_id'], $carrito);
 
     $pedido_id = obtener_id_del_ultimo_pedido($_SESSION['user_id']);
-    actualizar_estado_pedido($pedido_id, 'Enviado');
+    actualizar_estado_pedido($pedido_id, 'En Proceso');
 
     enviar_correo_confirmacion($_SESSION['user_id']);
 
@@ -71,8 +71,46 @@ function obtener_id_del_ultimo_pedido($user_id) {
 }
 
 function enviar_correo_confirmacion($user_id) {
-    // Implementa la lógica para enviar el correo electrónico de confirmación aquí
-    // ...
+    global $pdo;
+
+    // Obtén la dirección de correo electrónico del usuario
+    $to = obtener_direccion_correo($user_id);
+
+    if (!$to) {
+        echo "No se pudo obtener la dirección de correo electrónico del usuario.";
+        return;
+    }
+
+    $subject = "Confirmación de compra";
+    $message = "Gracias por tu compra. Tu pedido ha sido confirmado y está en proceso de envío.";
+
+    $user_email = obtener_direccion_correo($user_id);
+    if ($user_email) {
+    // Establecer encabezados adicionales
+    $headers = "From: info@miniaturasycolecciones.com\r\n";
+    $headers .= "Reply-To: $user_email\r\n";
+    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+    // Enviar el correo electrónico
+    if (mail($to, $subject, $message, $headers)) {
+        echo "Correo electrónico de confirmación enviado exitosamente.";
+    } else {
+        echo "Error al enviar el correo electrónico de confirmación.";
+    }
+}
+}
+// Función para obtener la dirección de correo del usuario
+function obtener_direccion_correo($user_id) {
+    global $pdo;
+
+    $stmt = $pdo->prepare("SELECT email FROM usuarios WHERE id = ?");
+    $stmt->execute([$user_id]);
+
+    if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        return $row['email'];
+    }
+
+    return null;
 }
 
 function registrar_transaccion($payment_intent, $user_id, $carrito) {
