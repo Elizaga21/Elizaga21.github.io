@@ -8,10 +8,11 @@ if (!isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'administrador') {
 }
 
 // Consulta para obtener información de ventas
-$sql = "SELECT Fecha, EstadoPedido, COUNT(*) as Cantidad, SUM(dp.Cantidad) as TotalVentas 
+$sql = "SELECT Fecha, EstadoPedido, COUNT(*) as Cantidad, SUM(dp.Cantidad) as TotalVentas, SUM(dp.TotalPedido) as TotalPedido
         FROM Pedidos p
         JOIN DetallesPedidos dp ON p.PedidoID = dp.PedidoID
         GROUP BY Fecha, EstadoPedido";
+
 $stmt = $pdo->query($sql);
 $ventas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -66,7 +67,6 @@ $ventas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             color: #fff;
         }
 
-        /* Agrega estilos adicionales según sea necesario */
     </style>
 </head>
 <body>
@@ -79,6 +79,7 @@ $ventas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <th>Estado del Pedido</th>
                 <th>Cantidad de Pedidos</th>
                 <th>Total Ventas</th>
+                <th>Total Pedidos (€)</th>
             </tr>
             <?php foreach ($ventas as $venta): ?>
                 <tr>
@@ -86,6 +87,7 @@ $ventas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td><?php echo $venta['EstadoPedido']; ?></td>
                     <td><?php echo $venta['Cantidad']; ?></td>
                     <td><?php echo $venta['TotalVentas']; ?></td>
+                    <td><?php echo $venta['TotalPedido']; ?></td>
                 </tr>
             <?php endforeach; ?>
         </table>
