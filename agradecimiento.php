@@ -26,6 +26,30 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin: 20px auto;
         }
+
+        
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .button-container a {
+            text-decoration: none;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .button-container a:first-child {
+            margin-right: 10px; 
+        }
+
+        .button-container a:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -35,40 +59,13 @@
     <div class="container">
         <h2>Agradecemos tu Compra</h2>
         <p>Gracias por elegir nuestros productos. Tu compra ha sido realizada con éxito.</p>
-        <p>Detalles de tu pedido:</p>
-
-        <?php
-        // Verificar si existen detalles en el carrito
-        if (!empty($_SESSION['carrito'])) {
-            // Obtener el último pedido realizado por el usuario
-            $usuario_id = $_SESSION['user_id'];
-            $stmt_pedido = $pdo->prepare("SELECT * FROM Pedidos WHERE UsuarioID = ? ORDER BY PedidoID DESC LIMIT 1");
-            $stmt_pedido->execute([$usuario_id]);
-            $pedido = $stmt_pedido->fetch(PDO::FETCH_ASSOC);
-
-            if ($pedido) {
-                // Obtener detalles del pedido desde la tabla DetallesPedidos
-                $pedido_id = $pedido['PedidoID'];
-                $stmt_detalles_pedido = $pdo->prepare("SELECT * FROM DetallesPedidos WHERE PedidoID = ?");
-                $stmt_detalles_pedido->execute([$pedido_id]);
-
-                while ($detalle_pedido = $stmt_detalles_pedido->fetch(PDO::FETCH_ASSOC)) {
-                    // Mostrar detalles del artículo y cantidad comprada
-                    echo "<p>Artículo: " . $detalle_pedido['ArticuloID'] . "</p>";
-                    echo "<p>Cantidad: " . $detalle_pedido['Cantidad'] . "</p>";
-                    echo "<p>Precio Unitario: " . $detalle_pedido['PrecioUnitario'] . " €</p>";
-                    echo "<p>Total del Artículo: " . $detalle_pedido['TotalPedido'] . " €</p>";
-                    echo "<hr>";
-                }
-            } else {
-                echo "<p>No se encontraron detalles del pedido.</p>";
-            }
-        } else {
-            echo "<p>No se encontraron detalles del pedido.</p>";
-        }
-        ?>
-
-        <a href="index.php">Volver a la Página Principal</a>
+     
+       
+        <div class="button-container">
+        <a href="mis_pedidos.php">Ver Pedido</a>
+            <a href="index.php">Volver a la Página Principal</a>
+          
+        </div>
     </div>
 
     <?php include 'footer.php'; ?>
