@@ -47,8 +47,8 @@ h2, h3 {
 }
 
 .order-button {
-    background-color: #000; /* Cambiado a negro */
-    color: #fff; /* Cambiado a blanco */
+    background-color: #000; 
+    color: #fff; 
     padding: 10px 15px;
     border: none;
     border-radius: 4px;
@@ -57,7 +57,7 @@ h2, h3 {
 }
 
 .order-button:hover {
-    background-color: #333; /* Puedes ajustar este color según tus preferencias */
+    background-color: #333; 
 }
 
 .empleado-links {
@@ -65,8 +65,8 @@ h2, h3 {
     margin-bottom: 20px;
     display: flex;
     flex-wrap: wrap;
-    flex-direction: column; /* Añadido para cambiar la dirección del eje principal a columna */
-    align-items: center; /* Añadido para centrar en el eje transversal */
+    flex-direction: column; 
+    align-items: center; 
 }
 
 .empleado-link {

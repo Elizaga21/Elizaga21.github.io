@@ -38,7 +38,7 @@ function calcularPrecioTotal($carrito) {
   $codigo_articulos = array_keys($carrito);
   $placeholders = str_repeat('?,', count($codigo_articulos) - 1) . '?';
 
-  global $pdo; // Asegúrate de que $pdo esté disponible en este contexto
+  global $pdo; 
 
   $stmt = $pdo->prepare("SELECT Codigo, Precio FROM Articulos WHERE Codigo IN ($placeholders)");
   $stmt->execute($codigo_articulos);
@@ -111,9 +111,7 @@ function calcularPrecioTotal($carrito) {
 
           // Verificar si se ha añadido un artículo al carrito desde esta página
           if (isset($_GET['added_to_cart']) && $_GET['added_to_cart'] === 'true') {
-            // Actualizar la sesión del carrito (si es necesario)
-
-          
+            
             // Redirigir nuevamente a carrito.php sin el parámetro added_to_cart
             header("Location: carrito.php");
             exit();

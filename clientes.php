@@ -92,7 +92,7 @@ class Cliente {
         return $this->activo;
     }
 
-    // Otros métodos de acceso
+   
 
 }
 

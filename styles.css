@@ -19,6 +19,8 @@ header {
   justify-content: space-between;
   align-items: center;
   color: white;
+    margin-top: 0; 
+
 }
 
 .logo {
@@ -39,7 +41,7 @@ header {
 
 .nombre-tienda {
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 16px;
+  font-size: 14px;
   text-align: center;
   flex-grow: 1;
   letter-spacing: 2px; 
@@ -62,15 +64,17 @@ header {
 
 .header-content li {
   cursor: pointer;
-  margin-right: 20px; /* Ajusta según tu necesidad */
+  margin-right: 20px;
 }
 
 .header-content li:last-child {
-  margin-right: 0; /* Elimina el margen derecho del último elemento */
+  margin-right: 0;
 }
 
 .header-content li:hover a {
   color: rgb(253, 253, 0);
+  background-color: transparent; 
+
 
 }
 
@@ -115,10 +119,10 @@ input {
   background-color: #f4f4f4;
   padding: 15px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 280px; /* Ajusta el ancho según tus necesidades */
+  width: 280px; 
   margin-left: 10px;
   margin-right: 10px; 
-  /* Puedes ajustar este valor según sea necesario */
+ 
 }
 
 
@@ -295,8 +299,8 @@ footer .grupo-2 small {
   }
 
   footer .grupo-1 .box h2 {
-    font-size: 16px; /* Ajusta el tamaño del título en dispositivos pequeños */
-    margin-bottom: 10px; /* Ajusta el espacio inferior del título en dispositivos pequeños */
+    font-size: 16px; 
+    margin-bottom: 10px; 
   }
 
   footer .grupo-1 .red-social a {
@@ -306,7 +310,7 @@ footer .grupo-2 small {
   }
 
   footer .grupo-2 small {
-    font-size: 14px; /* Ajusta el tamaño del texto pequeño en dispositivos pequeños */
+    font-size: 14px; 
   }
 
  

@@ -2,7 +2,7 @@
 session_start();
 require 'db_connection.php';
 
-// Verificar si el usuario está autenticado
+
 if (!isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'cliente') {
     header("Location: login.php");
     exit();
@@ -23,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
 
-        // Obtener el ID del usuario actual
         $usuarioID = $_SESSION['user_id'];
 
         if ($accion === 'agregar') {
@@ -39,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
         
-        // Puedes devolver algún mensaje de éxito si es necesario
         echo "Operación realizada con éxito";
         exit();
     }

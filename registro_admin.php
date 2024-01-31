@@ -99,14 +99,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .container {
-            max-width: 800px; /* Aumenté el ancho máximo */
+            max-width: 800px; 
             width: 100%;
             padding: 20px;
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin: 20px auto; /* Centré el contenedor */
+            margin: 20px auto; 
         }
 
         h2 {
@@ -116,20 +116,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         form {
             margin-top: 20px;
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Dividí el formulario en dos columnas */
-            grid-gap: 15px; /* Añadí espacio entre las columnas */
+            grid-template-columns: repeat(2, 1fr); 
+            grid-gap: 15px; 
         }
 
         input,
         select {
             margin-bottom: 15px;
-            width: 100%; /* Hice que los campos ocupen el 100% del ancho de su contenedor */
-            box-sizing: border-box; /* Incluí el padding y el borde en el ancho total */
+            width: 100%; 
+            box-sizing: border-box; 
         }
 
         input[type="submit"],
         .back-button {
-            width: 100%; /* Hice que los botones ocupen el 100% del ancho de su contenedor */
+            width: 100%; 
             padding: 10px;
             border: none;
             border-radius: 4px;
@@ -196,11 +196,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         #menu-navegacion ul li a {
     color: #ffffff;
     text-decoration: none;
-    transition: color 0.3s; /* Agregué una transición suave para suavizar el cambio de color */
+    transition: color 0.3s; 
 }
 
 #menu-navegacion ul li a:hover {
-    color: #ffd700; /* Amarillo */
+    color: #ffd700; 
 }
 
     </style>

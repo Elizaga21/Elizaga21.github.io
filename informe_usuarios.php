@@ -80,7 +80,7 @@ $usuarios = $stmt->fetchAll();
 
 .container {
     text-align: center;
-    max-width: 100%; /* Change to 100% to occupy the full width */
+    max-width: 100%; 
     margin: auto;
     padding: 20px;
     display: flex;
@@ -89,7 +89,7 @@ $usuarios = $stmt->fetchAll();
 }
 
 .user-table {
-    width: 100%; /* Change to 100% to occupy the full width of the container */
+    width: 100%; 
     border-collapse: collapse;
     margin: 20px auto;
     text-align: center;
@@ -102,15 +102,15 @@ form {
 }
 
 form input[type="text"] {
-    width: 20%; /* Ajusta el ancho según tus necesidades */
+    width: 20%; 
     padding: 8px;
-    font-size: 14px; /* Ajusta el tamaño de la fuente según tus necesidades */
+    font-size: 14px; 
 }
 
 form input[type="submit"] {
-    width: auto; /* Ajusta el ancho según tus necesidades */
+    width: auto; 
     padding: 8px 15px;
-    font-size: 14px; /* Ajusta el tamaño de la fuente según tus necesidades */
+    font-size: 14px; 
 }
 
 
@@ -129,8 +129,8 @@ h2, h3 {
 }
 
 .user-table th {
-    background-color: #000; /* Cambiado a negro */
-    color: #ff0; /* Cambiado a amarillo */
+    background-color: #000; 
+    color: #ff0; 
 }
 
 .actions {
@@ -149,7 +149,7 @@ h2, h3 {
 }
 
 .action-link:hover {
-    color: #ff0; /* Cambiado a amarillo */
+    color: #ff0; 
 }
 
 .order-form {
@@ -157,8 +157,8 @@ h2, h3 {
 }
 
 .order-button {
-    background-color: #000; /* Cambiado a negro */
-    color: #fff; /* Cambiado a blanco */
+    background-color: #000; 
+    color: #fff; 
     padding: 10px 15px;
     border: none;
     border-radius: 4px;
@@ -167,7 +167,7 @@ h2, h3 {
 }
 
 .order-button:hover {
-    background-color: #333; /* Puedes ajustar este color según tus preferencias */
+    background-color: #333; 
 }
 
 .admin-links {
@@ -175,8 +175,8 @@ h2, h3 {
     margin-bottom: 20px;
     display: flex;
     flex-wrap: wrap;
-    flex-direction: column; /* Añadido para cambiar la dirección del eje principal a columna */
-    align-items: center; /* Añadido para centrar en el eje transversal */
+    flex-direction: column; 
+    align-items: center; 
 }
 
 .admin-link {
@@ -202,7 +202,7 @@ h2, h3 {
 }
 .back-button-container {
             text-align: center;
-            margin-top: 20px; /* Ajusta según tus necesidades */
+            margin-top: 20px; 
         }
 
         .back-button {
@@ -217,7 +217,7 @@ h2, h3 {
         }
 
         .back-button:hover {
-            background-color: #333; /* Puedes ajustar este color según tus preferencias */
+            background-color: #333; 
         }
 
         .edit-icon {
@@ -241,23 +241,23 @@ h2, h3 {
 .admin-links_users {
     margin-top: 20px;
     display: flex;
-    justify-content: flex-end; /* Alinea los elementos al final del contenedor */
+    justify-content: flex-end; 
 }
 
 .admin-link_user {
     text-decoration: none;
-    color: #ff0; /* Amarillo */
+    color: #ff0; 
     padding: 10px;
     margin: 5px;
-    background-color: #000; /* Negro */
+    background-color: #000; 
     border: 1px solid #000;
     border-radius: 4px;
     transition: background-color 0.3s, color 0.3s;
 }
 
 .admin-link_user:hover {
-    background-color: #333; /* Puedes ajustar este color según tus preferencias */
-    color: #fff; /* Blanco */
+    background-color: #333; 
+    color: #fff; 
 }
 
 #cliente-info {
@@ -270,8 +270,8 @@ h2, h3 {
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    display: none; /* Inicialmente oculto */
-    margin: 0 auto; /* Centra el div horizontalmente */
+    display: none; 
+    margin: 0 auto; 
 }
 
 

@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $anyo = $_POST['anyo'];
 
     // Validar la nueva imagen
-    $nuevaImagen = $articulo['Imagen']; // Por defecto, usa la imagen actual
+    $nuevaImagen = $articulo['Imagen']; 
 
     if (!empty($_FILES["imagen"]["name"])) {
         $nuevaImagen = "img/" . $_FILES["imagen"]["name"];

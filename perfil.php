@@ -3,12 +3,10 @@ include 'db_connection.php';
 include 'header.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['rol']) || !in_array($_SESSION['rol'], ['cliente', 'empleado', 'administrador'])) {
-    // Redirect to login page or display a message
     header("Location: login.php");
     exit();
 }
 
-// Fetch user details from the database
 $user_id = $_SESSION['user_id'];
 $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id = ?");
 $stmt->execute([$user_id]);
@@ -18,7 +16,6 @@ $errors = array();
 
 $success_message = "";
 
-// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_name = $_POST['nombre'];
     $new_apellidos = $_POST['apellidos'];
@@ -32,30 +29,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_email = $_POST['email'];
     $new_contrasena = $_POST['contrasena'];
 
-    // Basic email validation
     if (!filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
-        // Handle invalid email format
         $errors[] = "El formato del correo electrónico no es válido.";
     }
 
-    // Basic phone number validation
     if (!preg_match('/^[0-9]{9}$/', $new_telefono)) {
-        // Handle invalid phone number format
         $errors[] = "El formato del número de teléfono no es válido.";
     }
 
-    // Check if there are any validation errors
     if (empty($errors)) {
-        // Update user profile
         $update_stmt = $pdo->prepare("UPDATE usuarios SET 
             nombre = ?, apellidos = ?, dni = ?, direccion = ?, localidad = ?, provincia = ?, pais = ?, codpos = ?, telefono = ?, email = ?, contrasena = ? 
             WHERE id = ?");
         $update_stmt->execute([$new_name, $new_apellidos, $new_dni, $new_direccion, $new_localidad, $new_provincia, $new_pais, $new_codpos, $new_telefono, $new_email, $new_contrasena, $user_id]);
 
-        // Set the success message
         $success_message = "¡Datos actualizados correctamente!";
 
-        // Fetch updated user details
         $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id = ?");
         $stmt->execute([$user_id]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -77,12 +66,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <style>
                 .form-column {
             display: inline-block;
-            vertical-align: top; /* Align columns at the top */
-            margin-right: 20px; /* Adjust the margin between columns as needed */
+            vertical-align: top; 
+            margin-right: 20px; 
         }
         
         form {
-            text-align: center; /* Center the form content */
+            text-align: center; 
         }
         body {
             background-color: #f8f9fa;
@@ -144,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s;
-            margin-top: 20px; /* Add margin to the top of the button */
+            margin-top: 20px; 
         }
 
         button:hover {

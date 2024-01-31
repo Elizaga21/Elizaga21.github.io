@@ -99,7 +99,7 @@ function iniciarSesion($usuario) {
 }
 
 .logoLogin img {
-    max-width: 100%; /* Adjust the max-width as needed */
+    max-width: 100%; 
     height: auto;
     transition: transform 0.3s ease;
 }
