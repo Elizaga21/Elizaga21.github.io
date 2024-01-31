@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $Nombre = $_POST['Nombre'];
     $Telefono = $_POST['Telefono'];
     $Email = $_POST['Email'];
-    $Contrasena = password_hash($_POST['Contrasena'], PASSWORD_DEFAULT);
+    $Contrasena = password_hash($_POST['contrasena'], PASSWORD_DEFAULT);
     $Rol = 'Cliente'; 
 
     if (empty($DNI) || empty($Nombre) ||  empty($Telefono) || empty($Email) || empty($Contrasena)) {
@@ -59,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("INSERT INTO usuarios (dni, nombre, telefono, email, contrasena, rol) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([$DNI, $Nombre, $Telefono, $Email, $Contrasena, $Rol]);
         
-        // Redirect to login page
         header("Location: login.php");
         exit();
     }
@@ -87,14 +86,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .container {
-            max-width: 300px; /* Aumenté el ancho máximo */
+            max-width: 300px; 
             width: 100%;
             padding: 20px;
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin: 20px auto; /* Centré el contenedor */
+            margin: 20px auto; 
         }
 
         h2 {
@@ -116,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         input[type="submit"]{
-            width: 100%; /* Hice que los botones ocupen el 100% del ancho de su contenedor */
+            width: 100%; 
             padding: 10px;
             border: none;
             border-radius: 4px;

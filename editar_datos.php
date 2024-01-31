@@ -26,11 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $direccion = $_POST['direccion'];
     $localidad = $_POST['localidad'];
     $provincia = $_POST['provincia'];
+    $pais = $_POST['pais'];
+    $codpos = $_POST['codpos'];
     $telefono = $_POST['telefono'];
     $email = $_POST['email'];
     $rol = isset($_POST['rol']) ? $_POST['rol'] : '';
 
-    if (empty($nombre) || empty($direccion) || empty($localidad) || empty($provincia) || empty($telefono) || empty($email)) {
+    if (empty($nombre) || empty($direccion) || empty($localidad) || empty($provincia) ||  empty($pais) || empty($codpos) || empty($telefono) || empty($email)) {
         $errors[] = "Por favor, complete todos los campos.";
     } else {
         // Validar el teléfono
@@ -50,6 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             strlen($direccion) > $maxSize ||
             strlen($localidad) > $maxSize ||
             strlen($provincia) > $maxSize ||
+            strlen($pais) > $maxSize ||
+            strlen($codpos) > $maxSize ||
             strlen($telefono) > $maxSize ||
             strlen($email) > $maxSize
         ) {
@@ -59,11 +63,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Si no hay errores, proceder con la actualización
         if (empty($errors)) {
             if ($_SESSION['rol'] === 'administrador' && !empty($rol)) {
-                $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, direccion = ?, localidad = ?, provincia = ?, telefono = ?, email = ?, rol = ? WHERE id = ?");
-                $stmt->execute([$nombre, $direccion, $localidad, $provincia, $telefono, $email, $rol, $usuarioId]);
+                $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, direccion = ?, localidad = ?, provincia = ?,  pais = ?, codpos = ?, telefono = ?, email = ?, rol = ? WHERE id = ?");
+                $stmt->execute([$nombre, $direccion, $localidad, $provincia, $pais, $codpos , $telefono, $email, $rol, $usuarioId]);
             } elseif ($_SESSION['rol'] !== 'administrador') {
-                $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, direccion = ?, localidad = ?, provincia = ?, telefono = ?, email = ? WHERE id = ?");
-                $stmt->execute([$nombre, $direccion, $localidad, $provincia, $telefono, $email, $usuarioId]);
+                $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, direccion = ?, localidad = ?, provincia = ?, pais= ?,  codpos = ?, telefono = ?, email = ? WHERE id = ?");
+                $stmt->execute([$nombre, $direccion, $localidad, $provincia, $pais, $codpos, $telefono, $email, $usuarioId]);
             }
 
             $redirectPage = ($_SESSION['rol'] === 'cliente') ? "cliente.php" : ($_SESSION['rol'] === 'administrador' ? "informe_usuarios.php" : 'empleado.php');
@@ -114,17 +118,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         label {
             color: #495057;
             margin-top: 10px;
-            font-weight: bold; /* Añadido para resaltar los labels */
+            font-weight: bold;
             
         }
 
         input,
            select {
-               margin-bottom: 10px; /* Reduje el espacio entre los elementos */
+               margin-bottom: 10px; 
                width: 100%;
             padding: 10px;
             border: 1px solid #ddd; 
-            border-radius: 4px; /* Añadido para incluir el padding y border en el ancho y alto total */
+            border-radius: 4px; 
            }
 
         input[type="submit"] {
@@ -142,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         a {
-            display: inline-block; /* Cambiado a inline-block para ajustarse al estilo global */
+            display: inline-block; 
             margin-top: 10px;
             text-decoration: none;
             color: #000;
@@ -199,6 +203,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label for="provincia">Provincia:</label>
         <input type="text" name="provincia" value="<?php echo $usuario['provincia']; ?>"><br>
+
+        <label for="pais">Pais:</label>
+        <input type="text" name="pais" value="<?php echo $usuario['pais']; ?>"><br>
+
+        <label for="codpos">Código Postal:</label>
+        <input type="text" name="codpos" value="<?php echo $usuario['codpos']; ?>"><br>
 
         <label for="telefono">Teléfono:</label>
         <input type="text" name="telefono" value="<?php echo $usuario['telefono']; ?>"><br>
