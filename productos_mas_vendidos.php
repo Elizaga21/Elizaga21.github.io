@@ -7,8 +7,15 @@ if (!isset($_SESSION['user_id']) || $_SESSION['rol'] !== 'administrador') {
 }
 require 'db_connection.php';
 
-// Consulta para obtener los artículos más vendidos
-$sql = "SELECT Imagen, COUNT(*) as Cantidad FROM Articulos WHERE masvendido = '1' GROUP BY Imagen ORDER BY Cantidad DESC LIMIT 5";
+$sql = "SELECT A.Imagen, A.Nombre, COUNT(DP.DetallePedidoID) as Cantidad 
+        FROM Articulos A
+        JOIN DetallesPedidos DP ON A.Codigo = DP.ArticuloID
+        JOIN Pedidos P ON DP.PedidoID = P.PedidoID
+        WHERE P.EstadoPedido = 'Completado'
+        GROUP BY A.Codigo
+        ORDER BY Cantidad DESC 
+        LIMIT 5";
+
 $stmt = $pdo->query($sql);
 $articulosMasVendidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -23,7 +30,7 @@ $articulosMasVendidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -76,7 +83,8 @@ $articulosMasVendidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php foreach ($articulosMasVendidos as $articulo): ?>
                 <div class="articulo">
                     <img src="<?php echo $articulo['Imagen']; ?>" alt="Artículo">
-                    <p>Cantidad: <?php echo $articulo['Cantidad']; ?></p>
+                    <p>Nombre: <?php echo $articulo['Nombre']; ?></p>
+                    <p>Cantidad Vendida: <?php echo $articulo['Cantidad']; ?></p>
                 </div>
             <?php endforeach; ?>
         </div>
