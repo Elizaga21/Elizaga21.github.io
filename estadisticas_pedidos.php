@@ -9,14 +9,15 @@ function modificarEstadoPedido($pdo, $pedidoID, $nuevoEstado) {
     $stmt->execute([$nuevoEstado, $pedidoID]);
 }
 
-// Función para eliminar un pedido
+// Función para eliminar un pedido (baja lógica)
 function eliminarPedido($pdo, $pedidoID) {
     $stmtEliminarDetalles = $pdo->prepare("DELETE FROM DetallesPedidos WHERE PedidoID = ?");
     $stmtEliminarDetalles->execute([$pedidoID]);
 
-    $stmtEliminarPedido = $pdo->prepare("DELETE FROM Pedidos WHERE PedidoID = ?");
+    $stmtEliminarPedido = $pdo->prepare("UPDATE Pedidos SET activo = 0 WHERE PedidoID = ?");
     $stmtEliminarPedido->execute([$pedidoID]);
 }
+
 
 // Verificar si se envió el formulario para modificar el EstadoPedido
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -35,10 +36,11 @@ $elementosPorPagina = 10;
 $paginaActual = isset($_GET['pagina']) ? $_GET['pagina'] : 1;
 $indiceInicio = ($paginaActual - 1) * $elementosPorPagina;
 
-// Consulta para obtener detalles de pedidos con límite y desplazamiento
+// Consulta para obtener detalles de pedidos con límite y desplazamiento (solo registros activos)
 $sqlPedidos = "SELECT P.PedidoID, P.UsuarioID, P.EstadoPedido, P.Fecha, D.TotalPedido 
                FROM Pedidos P 
                JOIN DetallesPedidos D ON P.PedidoID = D.PedidoID
+               WHERE P.activo = 1
                LIMIT :indiceInicio, :elementosPorPagina";
 $stmtPedidos = $pdo->prepare($sqlPedidos);
 $stmtPedidos->bindParam(':indiceInicio', $indiceInicio, PDO::PARAM_INT);
@@ -46,14 +48,14 @@ $stmtPedidos->bindParam(':elementosPorPagina', $elementosPorPagina, PDO::PARAM_I
 $stmtPedidos->execute();
 $pedidosPaginados = $stmtPedidos->fetchAll(PDO::FETCH_ASSOC);
 
-// Consulta para contar el total de pedidos
-$sqlTotalPedidos = "SELECT COUNT(*) as total FROM Pedidos";
+// Consulta para contar el total de pedidos (solo registros activos)
+$sqlTotalPedidos = "SELECT COUNT(*) as total FROM Pedidos WHERE activo = 1";
 $stmtTotalPedidos = $pdo->query($sqlTotalPedidos);
 $totalPedidos = $stmtTotalPedidos->fetch(PDO::FETCH_ASSOC)['total'];
 $paginasTotales = ceil($totalPedidos / $elementosPorPagina);
 
-// Consulta para obtener estadísticas de pedidos
-$sqlEstadisticas = "SELECT EstadoPedido, COUNT(*) as Cantidad FROM Pedidos GROUP BY EstadoPedido";
+// Consulta para obtener estadísticas de pedidos (solo registros activos)
+$sqlEstadisticas = "SELECT EstadoPedido, COUNT(*) as Cantidad FROM Pedidos WHERE activo = 1 GROUP BY EstadoPedido";
 $stmtEstadisticas = $pdo->query($sqlEstadisticas);
 $estadisticasPedidos = $stmtEstadisticas->fetchAll(PDO::FETCH_ASSOC);
 
