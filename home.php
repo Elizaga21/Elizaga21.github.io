@@ -66,6 +66,27 @@
         margin-bottom: 10px; 
     }
 
+         .oferta::before {
+         content: "Oferta"; 
+         position: absolute; 
+         top: 10px; 
+         right: 10px; 
+         background-color: black; 
+         color: yellow; 
+         padding: 5px; 
+         border-radius: 5px; 
+     }
+     
+     
+     .precio-oferta del {
+         color: red; 
+     }
+     
+  
+     .precio-oferta {
+         color: green; 
+     }
+
 
 </style>
 
@@ -105,25 +126,38 @@ if ($stmt) {
     while ($articulo = $stmt->fetch(PDO::FETCH_ASSOC)) {
         // Verificar si el artículo está marcado como favorito
         $esFavorito = in_array($articulo['Codigo'], $articulosFavoritos);
+        $esOferta = $articulo['enOferta'] == 1;
+
+        // Calcular el precio con descuento (10% menos)
+        $precioConDescuento = number_format($articulo['Precio'] * 0.90, 2);
 
         // Mostrar cada artículo
-        echo "<div class='articulo'>
-                <a href='detalle_articulo.php?codigo_articulo={$articulo['Codigo']}'>
-                    <img src='{$articulo['Imagen']}' alt='{$articulo['Nombre']}'>
-                    <h2>{$articulo['Nombre']}</h2>
-                </a>
-                <p>{$articulo['Descripcion']}</p>
-                <p>Precio: {$articulo['Precio']} euros</p>
-                <div class='iconos'>
-                    <i class='far fa-heart heart-icon " . ($esFavorito ? 'fas' : '') . "' data-codigo='{$articulo['Codigo']}'></i>
-                    <form action='carrito.php' method='post'>
-                        <input type='hidden' name='codigo_articulo' value='{$articulo['Codigo']}'>
-                        <input type='number' name='cantidad' value='1' min='1'>
-                        <button type='submit' name='agregar_carrito'>
-                            <i class='fas fa-shopping-cart'></i> Agregar al Carrito
-                        </button>
-                    </form>
-                </div>
+        echo "<div class='articulo" . ($esOferta ? ' oferta' : '') . "'>"; 
+        echo "<a href='detalle_articulo.php?codigo_articulo={$articulo['Codigo']}&oferta={$articulo['enOferta']}'>
+                <img src='{$articulo['Imagen']}' alt='{$articulo['Nombre']}'>
+                <h2>{$articulo['Nombre']}</h2>
+              </a>
+              <p>{$articulo['Descripcion']}</p>";
+        
+        if ($esOferta) {
+            // Si el artículo está en oferta, mostrar precio antiguo tachado y precio con descuento
+            echo "<p class='precio-oferta'>Precio Antiguo: <del>{$articulo['Precio']} euros</del></p>";
+            echo "<p class='precio-oferta'>Precio Nuevo: {$precioConDescuento} euros</p>";
+        } else {
+            // Si no está en oferta, mostrar solo el precio normal
+            echo "<p>Precio: {$articulo['Precio']} euros</p>";
+        }
+        
+        echo "<div class='iconos'>
+                <i class='far fa-heart heart-icon " . ($esFavorito ? 'fas' : '') . "' data-codigo='{$articulo['Codigo']}'></i>
+                <form action='carrito.php' method='post'>
+                    <input type='hidden' name='codigo_articulo' value='{$articulo['Codigo']}'>
+                    <input type='number' name='cantidad' value='1' min='1'>
+                    <button type='submit' name='agregar_carrito'>
+                        <i class='fas fa-shopping-cart'></i> Agregar al Carrito
+                    </button>
+                </form>
+              </div>
               </div>";
     }
 

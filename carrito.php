@@ -50,12 +50,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_carrito'])
 
 $total_price = 0.0;
 foreach ($carrito_detalles as $articulo) {
-    $item_price = $articulo['Precio'] * $_SESSION['carrito'][$articulo['Codigo']];
+    if ($articulo['enOferta']) {
+        $item_price = $articulo['Precio'] * 0.90 * $_SESSION['carrito'][$articulo['Codigo']];
+    } else {
+        $item_price = $articulo['Precio'] * $_SESSION['carrito'][$articulo['Codigo']];
+    }
     $total_price += $item_price;
 }
 
-// Añade el coste del pedido con el coste del envío
+// Añade el coste del envío
 $total_price += (count($carrito_detalles) * STANDARD_SHIPPING_COST);
+
+// Formatea el total del carrito con dos decimales
+$total_price_formatted = number_format($total_price, 2);
+
 
 // Procesar la compra si se ha enviado el formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
@@ -267,25 +275,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['realizar_compra'])) {
             
         <?php if (!empty($carrito_detalles)): ?>
             <form action="carrito.php" method="post">
-                <?php foreach ($carrito_detalles as $articulo): ?>
-                    <div class="cart-item">
-                        <img src="<?php echo $articulo['Imagen']; ?>" alt="<?php echo $articulo['Nombre']; ?>">
-                        <h3><?php echo $articulo['Nombre']; ?></h3>
-                        <p>Cantidad: 
+            <?php foreach ($carrito_detalles as $articulo): ?>
+                <div class="cart-item">
+                    <img src="<?php echo $articulo['Imagen']; ?>" alt="<?php echo $articulo['Nombre']; ?>">
+                    <h3><?php echo $articulo['Nombre']; ?></h3>
+                    <p>Cantidad: 
                         <input type="number" name="cantidad[<?php echo $articulo['Codigo']; ?>]" 
-                       value="<?php echo $_SESSION['carrito'][$articulo['Codigo']]; ?>" 
-                       min="1" max="10">
-                        </p>
+                        value="<?php echo $_SESSION['carrito'][$articulo['Codigo']]; ?>" 
+                        min="1" max="10">
+                    </p>
+                    <?php if ($articulo['enOferta']): ?>
+                        <p>Precio Antiguo: <del><?php echo $articulo['Precio']; ?> €</del></p>
+                        <p>Precio Nuevo: <?php echo number_format($articulo['Precio'] * 0.90, 2); ?> €</p>
+                    <?php else: ?>
                         <p>Precio: <?php echo $articulo['Precio']; ?> €</p>
-                        <p>Total: <?php echo ($articulo['Precio'] * $_SESSION['carrito'][$articulo['Codigo']]); ?> €</p>
-                        <a href="eliminar_del_carrito.php?codigo_articulo=<?php echo $articulo['Codigo']; ?>">Eliminar del Carrito</a>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endif; ?>
+                    <p>Total: <?php echo number_format(($articulo['enOferta'] ? ($articulo['Precio'] * 0.90 * $_SESSION['carrito'][$articulo['Codigo']]) : ($articulo['Precio'] * $_SESSION['carrito'][$articulo['Codigo']])), 2); ?> €</p>
+                    <a href="eliminar_del_carrito.php?codigo_articulo=<?php echo $articulo['Codigo']; ?>">Eliminar del Carrito</a>
+                </div>
+            <?php endforeach; ?>
 
                 <p>Envío: <?php echo STANDARD_SHIPPING_COST; ?> € por cada artículo</p>
 
                 <div class="cart-buttons">
-                <p>Total del Carrito: <?php echo ($total_price); ?> €</p>
+                <p>Total del Carrito: <?php echo $total_price_formatted; ?> €</p>
                     <button type="submit" name="actualizar_carrito">Actualizar Carrito</button>
                 </div>
             </form>

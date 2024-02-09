@@ -15,6 +15,13 @@ if (isset($_GET['codigo_articulo'])) {
         header("Location: index.php");
         exit();
     }
+
+      $esOferta = isset($_GET['oferta']) && $_GET['oferta'] == 1;
+     
+    if ($esOferta) {
+        $precioConDescuento = number_format($articulo['Precio'] * 0.90, 2);
+        
+    }
 } else {
     
     header("Location: index.php");
@@ -176,21 +183,27 @@ if (isset($_GET['codigo_articulo'])) {
     <?php include 'header.php'; ?>
 
     <div class="container">
-        <h2>Detalles del Artículo</h2>
-        <div>
-            <img src="<?php echo $articulo['Imagen']; ?>" alt="<?php echo $articulo['Nombre']; ?>">
-            <h3><?php echo $articulo['Nombre']; ?></h3>
-            <p><?php echo $articulo['Descripcion']; ?></p>
-            <p>Precio: <?php echo $articulo['Precio']; ?> €</p>
-            <form action="carrito.php" method="post">
+    <h2>Detalles del Artículo</h2>
+    <div>
+        <img src="<?php echo $articulo['Imagen']; ?>" alt="<?php echo $articulo['Nombre']; ?>">
+        <h3><?php echo $articulo['Nombre']; ?></h3>
+        <p><?php echo $articulo['Descripcion']; ?></p>
+        <?php if ($esOferta) : ?>
+            <p class="precio-oferta">Precio Antiguo: <del><?php echo $articulo['Precio']; ?> euros</del></p>
+            <p class="precio-oferta">Precio Nuevo: <?php echo $precioConDescuento; ?> euros</p>
+        <?php else : ?>
+            <p>Precio: <?php echo $articulo['Precio']; ?> euros</p>
+        <?php endif; ?>
+        <form action="carrito.php" method="post">
             <input type="hidden" name="codigo_articulo" value="<?php echo $articulo['Codigo']; ?>">
             <input type="number" name="cantidad" value="1" min="1">
             <button type="submit" name="agregar_carrito">
                 <i class="fas fa-shopping-cart"></i> Agregar al Carrito
             </button>
         </form>
-        </div>
     </div>
+</div>
+
 
     
     <div class="related-products">
