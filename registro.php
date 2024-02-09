@@ -9,11 +9,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $DNI = $_POST['DNI'];
     $Nombre = $_POST['Nombre'];
     $Telefono = $_POST['Telefono'];
+    $Direccion = $_POST['Direccion'];
+    $Localidad = $_POST['Localidad'];
+    $Provincia = $_POST['Provincia'];
+    $Pais = $_POST['Pais'];
+    $Codpos = $_POST['Codpos'];
     $Email = $_POST['Email'];
     $Contrasena = password_hash($_POST['contrasena'], PASSWORD_DEFAULT);
     $Rol = 'Cliente'; 
 
-    if (empty($DNI) || empty($Nombre) ||  empty($Telefono) || empty($Email) || empty($Contrasena)) {
+    if (empty($DNI) || empty($Nombre) ||  empty($Telefono)|| empty($Direccion) || empty($Localidad) || empty($Provincia) || empty($Pais) || empty($Codpos) || empty($Email) || empty($Contrasena)) {
         $errors[] = "Por favor, complete todos los campos.";
     } else {
         if (!preg_match('/^[0-9]{8}[A-Za-z]$/', $DNI)) {
@@ -56,8 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $errors[] = "El tamaño de uno o más campos excede el límite permitido.";
                         } else {
         // Insertar usuario en la base de datos
-        $stmt = $pdo->prepare("INSERT INTO usuarios (dni, nombre, telefono, email, contrasena, rol) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$DNI, $Nombre, $Telefono, $Email, $Contrasena, $Rol]);
+        $stmt = $pdo->prepare("INSERT INTO usuarios (dni, nombre, telefono, direccion, localidad, provincia, pais, codpos, email, contrasena, rol) VALUES (?, ?, ?, ?, ?, ?, ? , ?, ?, ?, ?)");
+        $stmt->execute([$DNI, $Nombre, $Telefono, $Direccion, $Localidad, $Provincia, $Pais, $Codpos, $Email, $Contrasena, $Rol]);
         
         header("Location: login.php");
         exit();
@@ -148,6 +153,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="text" name="DNI" placeholder="DNI">
             <input type="text" name="Nombre" placeholder="Nombre">
             <input type="text" name="Telefono" placeholder="Teléfono">
+            <input type="text" name="Direccion" placeholder="Dirección">
+            <input type="text" name="Localidad" placeholder="Localidad">
+            <input type="text" name="Provincia" placeholder="Provincia">
+            <input type="text" name="Pais" placeholder="País">
+            <input type="text" name="Codpos" placeholder="Código Postal">
             <input type="text" name="Email" placeholder="Email">
             <input type="password" name="contrasena" placeholder="Contraseña">
             <input type="submit" value="Registrarse" class="btn btn-success">

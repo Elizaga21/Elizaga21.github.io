@@ -116,7 +116,7 @@ require 'db_connection.php';
         </div>
 
         <input type="hidden" name="paymentMethodId" id="paymentMethodId" value="">
-        <button type="button" id="payButton" class="btn btn-primary">Pay</button>
+        <button type="button" id="payButton" class="btn btn-primary">Pagar</button>
     </form>
 
     <?php include 'footer.php'; ?>

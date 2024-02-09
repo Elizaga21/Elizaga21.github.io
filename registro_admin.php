@@ -23,17 +23,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rol = $_POST['rol'];
     $activo =  $_POST['activo'];
 
-    if (!preg_match('/^\d{8}[a-zA-Z]$/', $dni)) {
-        $error_message = "Formato de DNI incorrecto.";
+    if (empty($dni) || empty($nombre) ||  empty($telefono) || empty($direccion) || empty($localidad) || empty($provincia) || empty($pais) || empty($codpos) || empty($email) || empty($contrasena)) {
+        $errors[] = "Por favor, complete todos los campos.";
     } else {
-        $letra = strtoupper(substr($dni, -1));
-        $numeros = substr($dni, 0, -1);
-        $calculo_letra = "TRWAGMYFPDXBNJZSQVHLCKE";
-        $posicion = $numeros % 23;
-
-        if ($calculo_letra[$posicion] !== $letra) {
-            $error_message = "Letra de DNI incorrecta.";
+        if (!preg_match('/^\d{8}[a-zA-Z]$/', $dni)) {
+            $errors[] = "El formato del DNI no es válido.";
         } else {
+            // Obtener la letra del DNI
+            $letra = strtoupper(substr($dni, -1));
+            $numeros = substr($dni, 0, -1);
+
+            // Calcular la letra correcta
+            $calculo_letra = "TRWAGMYFPDXBNJZSQVHLCKE";
+            $posicion = $numeros % 23;
+            $letra_correcta = $calculo_letra[$posicion];
+
+            // Comprobar si la letra es correcta
+            if ($letra_correcta !== $letra) {
+                $errors[] = "La letra del DNI no es correcta.";
+            }
+
+            // Validar el teléfono
+            if (!preg_match('/^\d{9}$/', $telefono)) {
+                $errors[] = "El formato del teléfono no es válido.";
+            } else {
+                // Validar el correo electrónico
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $errors[] = "El formato del correo electrónico no es válido.";
+                } else {
        
             $stmt_dni = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE dni = ?");
             $stmt_dni->execute([$dni]);
@@ -42,34 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($dni_exists) {
                 $error_message = "El DNI ya está registrado.";
             } else {
-          
-                $max_field_lengths = array(
-                    'dni' => 9,
-                    'nombre' => 255,
-                    'direccion' => 255,
-                    'localidad' => 255,
-                    'provincia' => 255,
-                    'telefono' => 9,
-                    'email' => 255,
-                    'contrasena' => 255,
-                    'rol' => 20,
-                );
-
-                foreach ($_POST as $field => $value) {
-                    if (strlen($value) > $max_field_lengths[$field]) {
-                        $error_message = "El campo $field excede la longitud máxima permitida.";
-                        break;
-                    }
-                }
-
-                if (!preg_match('/^\d{9}$/', trim($telefono))) {
-                    $error_message = "El teléfono debe contener exactamente 9 dígitos.";
-                }
-                
-
-                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    $error_message = "Formato de correo electrónico incorrecto.";
-                }
 
                 $stmt_insert = $pdo->prepare("INSERT INTO usuarios (dni, nombre, apellidos, direccion, localidad, provincia,pais,codpos, telefono, email, contrasena, rol, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 $stmt_insert->execute([$dni, $nombre,$apellidos, $direccion, $localidad, $provincia, $pais, $codpos, $telefono, $email, $contrasena, $rol, $activo]);
@@ -77,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header("Location: informe_usuarios.php");
                 exit();
             }
-        }
+        }}}
     }
 }
 ?>
