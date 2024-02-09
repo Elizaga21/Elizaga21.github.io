@@ -23,6 +23,7 @@ if ($_SESSION['rol'] === 'cliente' && $usuarioId != $_SESSION['user_id']) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $_POST['nombre'];
+    $apellidos = $_POST['apellidos'];
     $direccion = $_POST['direccion'];
     $localidad = $_POST['localidad'];
     $provincia = $_POST['provincia'];
@@ -32,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $rol = isset($_POST['rol']) ? $_POST['rol'] : '';
 
-    if (empty($nombre) || empty($direccion) || empty($localidad) || empty($provincia) ||  empty($pais) || empty($codpos) || empty($telefono) || empty($email)) {
+    if (empty($nombre) || empty($apellidos) || empty($direccion) || empty($localidad) || empty($provincia) ||  empty($pais) || empty($codpos) || empty($telefono) || empty($email)) {
         $errors[] = "Por favor, complete todos los campos.";
     } else {
         // Validar el teléfono
@@ -63,11 +64,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Si no hay errores, proceder con la actualización
         if (empty($errors)) {
             if ($_SESSION['rol'] === 'administrador' && !empty($rol)) {
-                $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, direccion = ?, localidad = ?, provincia = ?,  pais = ?, codpos = ?, telefono = ?, email = ?, rol = ? WHERE id = ?");
-                $stmt->execute([$nombre, $direccion, $localidad, $provincia, $pais, $codpos , $telefono, $email, $rol, $usuarioId]);
+                $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, apellidos = ?,  direccion = ?, localidad = ?, provincia = ?,  pais = ?, codpos = ?, telefono = ?, email = ?, rol = ? WHERE id = ?");
+                $stmt->execute([$nombre, $apellidos, $direccion, $localidad, $provincia, $pais, $codpos , $telefono, $email, $rol, $usuarioId]);
             } elseif ($_SESSION['rol'] !== 'administrador') {
-                $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, direccion = ?, localidad = ?, provincia = ?, pais= ?,  codpos = ?, telefono = ?, email = ? WHERE id = ?");
-                $stmt->execute([$nombre, $direccion, $localidad, $provincia, $pais, $codpos, $telefono, $email, $usuarioId]);
+                $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, apellidos = ?, direccion = ?, localidad = ?, provincia = ?, pais= ?,  codpos = ?, telefono = ?, email = ? WHERE id = ?");
+                $stmt->execute([$nombre, $apellidos, $direccion, $localidad, $provincia, $pais, $codpos, $telefono, $email, $usuarioId]);
             }
 
             $redirectPage = ($_SESSION['rol'] === 'cliente') ? "cliente.php" : ($_SESSION['rol'] === 'administrador' ? "informe_usuarios.php" : 'empleado.php');
@@ -194,6 +195,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="POST">
         <label for="nombre">Nombre:</label>
         <input type="text" name="nombre" value="<?php echo $usuario['nombre']; ?>"><br>
+
+        <label for="nombre">Apellidos:</label>
+        <input type="text" name="apellidos" value="<?php echo $usuario['apellidos']; ?>"><br>
 
         <label for="direccion">Dirección:</label>
         <input type="text" name="direccion" value="<?php echo $usuario['direccion']; ?>"><br>

@@ -350,8 +350,9 @@ h2, h3 {
         <input type="number" name="Precio" min="0" step="0.01" required>
         <br>
 
-        <label for="Imagen">Imagen (jpg, jpeg, gif, png | Max 300 KB | Max 200x200 px):</label>
-        <input type="file" name="Imagen" accept="image/jpeg, image/png, image/gif" required>
+        <label for="Imagen">Imagen o Video (jpg, jpeg, gif, png, mp4 | Max 300 KB para imágenes | Max 200x200 px para imágenes):</label>
+        <input type="file" name="Imagen" accept="image/jpeg, image/png, image/gif, video/mp4" required>
+
         <br>
 
         <label for="enOferta">En Oferta:</label>

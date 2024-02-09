@@ -113,6 +113,7 @@ h2, h3 {
         <div class="admin-links">
             <a href="informe_usuarios.php" class="admin-link">Informe de Usuarios</a>
             <a href="informe_articulos.php" class="admin-link">Informe de Artículos</a>
+            <a href="mantenimiento_categorias.php" class="admin-link">Mantenimiento de Categorías</a>
             <a href="estadisticas_pedidos.php" class="admin-link">Estadísticas de Pedidos</a>
             <a href="productos_mas_vendidos.php" class="admin-link">Productos más Vendidos</a>
             <a href="ventas.php" class="admin-link">Ventas del Mes</a>
