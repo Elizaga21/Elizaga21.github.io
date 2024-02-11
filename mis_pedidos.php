@@ -45,6 +45,15 @@ if (isset($_SESSION['user_id']) && $_SESSION['rol'] === 'cliente') {
                 $error_message = "No se puede cancelar el pedido después de 24 horas.";
             }
     }
+
+    if (isset($_POST['updateShipping'])) {
+        $pedidoID = $_POST['pedidoID'];
+        $nuevaFormaEnvio = $_POST['nuevaFormaEnvio'];
+    
+        $stmt_update_shipping = $pdo->prepare("UPDATE Pedidos SET FormaEnvio = ? WHERE PedidoID = ?");
+        $stmt_update_shipping->execute([$nuevaFormaEnvio, $pedidoID]);
+    }
+    
     }
     ?>
 
@@ -166,8 +175,36 @@ body {
     color: #dc3545; 
     margin-top: 10px;
     font-weight: bold;
-}
-
+     }
+     
+     /* Estilo específico para el formulario de actualizar Forma de Envío */
+     .update-form.shipping-form {
+         margin-top: 20px;
+     }
+     
+     .update-form.shipping-form label {
+         margin-right: 10px;
+     }
+     
+     .update-form.shipping-form select {
+         width: 150px; 
+         padding: 5px;
+         margin-right: 10px;
+     }
+     
+     .update-form.shipping-form button {
+         padding: 10px 15px;
+         margin-top: 10px;
+         margin-bottom: 10px;
+         background-color: #007bff;
+         color: #fff;
+         border: none;
+         cursor: pointer;
+     }
+     
+     .update-form.shipping-form button:hover {
+         background-color: #0056b3;
+     }
 
     </style>
 </head>
@@ -217,7 +254,7 @@ body {
                     </ul>
 
                     <form action="" method="post" class="update-form">
-    <label for="nuevoEstado">Actualizar EstadoPedido:</label>
+    <label for="nuevoEstado">Actualizar Estado Pedido:</label>
     <select name="nuevoEstado" id="nuevoEstado">
         <option value="Pendiente">Pendiente</option>
         <option value="En Proceso">En Proceso</option>
@@ -226,6 +263,17 @@ body {
     </select>
     <input type="hidden" name="pedidoID" value="<?= $order['PedidoID'] ?>">
     <button type="submit" name="updateOrder">Actualizar Pedido</button>
+</form>
+
+<form action="" method="post" class="update-form">
+    <label for="nuevaFormaEnvio">Actualizar Forma de Envío:</label>
+    <select name="nuevaFormaEnvio" id="nuevaFormaEnvio">
+        <option value="Estandar">Estandar</option>
+        <option value="Urgente">Urgente</option>
+        <option value="Recoger en Tienda">Recoger en Tienda</option>
+    </select>
+    <input type="hidden" name="pedidoID" value="<?= $order['PedidoID'] ?>">
+    <button type="submit" name="updateShipping">Actualizar Envío</button>
 </form>
 
  <!-- Formulario para cancelar el pedido con identificador único -->
