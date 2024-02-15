@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_codpos = $_POST['codpos'];
     $new_telefono = $_POST['telefono'];
     $new_email = $_POST['email'];
-    $new_contrasena = $_POST['contrasena'];
+    $new_contrasena = $user['contrasena']; 
 
     if (!filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = "El formato del correo electrónico no es válido.";

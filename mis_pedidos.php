@@ -63,26 +63,34 @@ if (isset($_SESSION['user_id']) && $_SESSION['rol'] === 'cliente') {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Mis Pedidos</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
     <style>
         
-body {
+        body {
     font-family: 'Arial', sans-serif;
     background-color: #f8f9fa;
     margin: 0;
 }
 
-.container {
-    text-align: center;
-    max-width: 800px;
-    width: 100%;
-    margin: auto;
-    padding: 20px;
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; 
 }
 
+.container {
+    max-width: 800px;
+    width: 120%;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex: 1; 
+}
 #content {
             margin-top: 20px;
             text-align: center;
@@ -209,6 +217,7 @@ body {
     </style>
 </head>
     <body>
+    <div class="wrapper">
     <div id="container">
 
         <div id="content">
@@ -290,7 +299,9 @@ body {
             <?php endforeach; ?>
         </div>
     </div>
+    </div>
 
+    
     <?php include 'footer.php'; ?>
 
     </body>

@@ -63,12 +63,17 @@ $favoritos = $stmt->fetchAll();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
     <style>
-        body {
+          body {
             font-family: 'Arial', sans-serif;
             background-color: #f8f9fa;
             margin: 0;
         }
 
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; 
+        }
 
         .container {
             max-width: 800px; 
@@ -79,7 +84,9 @@ $favoritos = $stmt->fetchAll();
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             margin: 20px auto; 
+            flex: 1; 
         }
+
         .favoritos-container {
         display: flex;
         flex-wrap: wrap;
@@ -118,6 +125,7 @@ $favoritos = $stmt->fetchAll();
 
     <?php include 'header.php'; ?>
 
+    <div class="wrapper">
     <div class="container">
         <h2>Tus Artículos Favoritos</h2>
 
@@ -142,6 +150,7 @@ $favoritos = $stmt->fetchAll();
         <?php else : ?>
             <p>No tienes ningún artículo marcado como favorito.</p>
         <?php endif; ?>
+        </div>
         </div>
  
         <?php include 'footer.php'; ?>

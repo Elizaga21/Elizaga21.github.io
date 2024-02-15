@@ -45,6 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!filter_var($Email, FILTER_VALIDATE_EMAIL)) {
                     $errors[] = "El formato del correo electrónico no es válido.";
                 } else {
+                    // Comprobar si el correo electrónico ya existe
+                    $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = ?");
+                    $stmt->execute([$Email]);
+                    $existingEmail = $stmt->fetch();
+                }
+
+                    if ($existingEmail) {
+                        $errors[] = "El correo electrónico ya está registrado.";
+                    } else {
                     // Comprobar si el DNI ya existe
                     $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE dni = ?");
                     $stmt->execute([$DNI]);
